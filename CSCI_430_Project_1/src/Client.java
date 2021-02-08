@@ -43,7 +43,7 @@ public class Client implements Serializable {
 	    return this.id.equals(id);
 	  }
 	  public String toString() {
-	    String string = "Client name " + name + " address " + address + " id " + id + "phone " + phone;
+	    String string = "Client name: " + name + " Address: " + address + " ID: " + id + " Phone: " + phone;
 	    return string;
 	  }
 }

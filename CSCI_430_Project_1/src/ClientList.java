@@ -54,6 +54,7 @@ public class ClientList implements Serializable {
       cnfe.printStackTrace();
     }
   }
+  
   public String toString() {
     return clients.toString();
   }
