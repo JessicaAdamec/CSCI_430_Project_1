@@ -95,4 +95,3 @@ public class Warehouse implements Serializable {
     return "Warehouse System\n";
   }
 }
-
