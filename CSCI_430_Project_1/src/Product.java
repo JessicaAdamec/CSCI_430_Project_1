@@ -10,16 +10,15 @@
   public class Product implements Serializable {
 	  private String id;		//identifier for product
 	  private String name; 		//name of the product
-	  private double price;
+	  private String price;		//Changing to type 'String' to work with getToken method
 	  private int inventory;	//how much of the product is available.
 	  private String supplierID;
 	  
-	  public Product (String id, String name, double price, int inventory, String, supplierID) {
+	  public Product (String id, String name, String price, int inventory, String supplierID) {
 		  this.id = id;
 		  this.name = name;
 		  this.price = price;
-		  this.inventory = inventory;
-		  
+		  this.inventory = inventory;		  
 		  this.supplierID = supplierID;
 	  }
 	 
@@ -40,7 +39,7 @@
 		this.inventory = this.inventory - num;
 	  }
 	  
-	  public void setPrice(double price) {
+	  public void setPrice(String price) {
 		  this.price = price;
 	  }
 	  
@@ -60,7 +59,7 @@
 		  return inventory;
 	  }
 	  
-	  public double getPrice() {
+	  public String getPrice() {
 		  return price;
 	  }
 	  
@@ -77,6 +76,6 @@
 	  */
 	  
 	  public String toString() {
-		  return "id: " + id + " name: " + name + " price: $" + Double.toString(price) + " inventory: " + Integer.toString(inventory);
+		  return "id: " + id + " name: " + name + " price: $" + price + " inventory: " + Integer.toString(inventory);
 	  }
   }

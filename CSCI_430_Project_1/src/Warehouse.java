@@ -10,11 +10,15 @@ public class Warehouse implements Serializable {
   public static final int OPERATION_FAILED= 4;
   public static final int NO_SUCH_MEMBER = 5;
   private ClientList clientList;
+  private ProductList productList;
+  private SupplierList supplierList;
   
   private static Warehouse warehouse;
   
   private Warehouse() {
     clientList = ClientList.instance();
+    productList = ProductList.instance();
+    supplierList = SupplierList.instance();
   }
   
   public static Warehouse instance() {
@@ -33,9 +37,34 @@ public class Warehouse implements Serializable {
     }
     return null;
   }
+    
+  public Product addProduct(String id, String name, String price, 
+		  int inventory, String supplierID) {
+	    Product product = new Product(id, name, price, inventory, supplierID);
+	    if (productList.insertProduct(product)) {
+	      return (product);
+	    }
+	    return null;
+	  }
  
+  public Supplier addSupplier(String name, String address, String phone) {
+	  	Supplier supplier = new Supplier(name, address, phone);
+	    if (supplierList.insertSupplier(supplier)) {
+	      return (supplier);
+	    }
+	    return null;
+	  }
+  
   public Iterator getClients() {
       return clientList.getClients();
+  }
+  
+  public Iterator getProducts() {
+      return productList.getProducts();
+  }
+  
+  public Iterator getSuppliers() {
+      return supplierList.getSuppliers();
   }
   
   public static Warehouse retrieve() {

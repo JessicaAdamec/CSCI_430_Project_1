@@ -6,10 +6,8 @@ public class Supplier implements Serializable {
   private String address;
   private String phone;
   private String id;
-  private static final String SUPPLIER_STRING = "S";
-  private List booksBorrowed = new LinkedList();
-  private List booksOnHold = new LinkedList();
-  private List transactions = new LinkedList();
+  private static final String SUPPLIER_STRING = "S"; 
+  
   public  Supplier (String name, String address, String phone) {
     this.name = name;
     this.address = address;

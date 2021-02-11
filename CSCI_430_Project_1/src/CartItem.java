@@ -12,9 +12,9 @@ public class CartItem implements Serializable {
 	private String productID; 		//id of the product
 	private int quantity;			//amount of product
 	
-	public CartItem(String productID, quantity) {
-	  this.id = productID;
-	  this.name = quantity;
+	public CartItem(String productID, int quantity) {
+	  this.productID = productID;
+	  this.quantity = quantity;
 	}
 
 

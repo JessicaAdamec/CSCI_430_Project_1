@@ -8,12 +8,12 @@
   
 public class ShoppingCart implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private List cartItems = new LinkedList();
+	private static List cartItems = new LinkedList(); //Made this static
 	private static ShoppingCart shoppingCart;
 	private String clientID;
-	
+
 	public static ShoppingCart instance(String clientID) {
-		if (productList == null) {
+		if (cartItems == null) { //was productList which cannot be referenced here
 		  return (shoppingCart = new ShoppingCart(clientID));
 		} else {
 		  return shoppingCart;
@@ -35,7 +35,7 @@ public class ShoppingCart implements Serializable {
 	private void writeObject(java.io.ObjectOutputStream output) {
 		try {
 		  output.defaultWriteObject();
-		  output.writeObject(productList);
+		  output.writeObject(cartItems);//was productList which cannot be referenced here
 		} catch(IOException ioe) {
 		  System.out.println(ioe);
 		}
