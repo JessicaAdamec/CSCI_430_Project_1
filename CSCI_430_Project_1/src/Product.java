@@ -12,16 +12,15 @@
 	  private String name; 		//name of the product
 	  private double price;
 	  private int inventory;	//how much of the product is available.
-	  //private Supplier supplier;
+	  private String supplierID;
 	  
-	  //need to add supplier class as products work off of a product/supplier pairing
-	  public Product (String id, String name, double price, int inventory) {
+	  public Product (String id, String name, double price, int inventory, String, supplierID) {
 		  this.id = id;
 		  this.name = name;
 		  this.price = price;
 		  this.inventory = inventory;
 		  
-		  //this.supplier = supplier
+		  this.supplierID = supplierID;
 	  }
 	 
 	  
@@ -45,6 +44,10 @@
 		  this.price = price;
 	  }
 	  
+	  public void setSupplierID(String supplierID) {
+		  this.supplierID = supplierID;
+	  }
+	  
 	  public String getID() {
 		  return id;
 	  }
@@ -59,6 +62,10 @@
 	  
 	  public double getPrice() {
 		  return price;
+	  }
+	  
+	  public String getSupplierID() {
+		  return supplierID;
 	  }
 	  
 	  /*
