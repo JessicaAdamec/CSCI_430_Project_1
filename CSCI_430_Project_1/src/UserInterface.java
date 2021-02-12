@@ -175,16 +175,26 @@ public class UserInterface {
   
   public void editProduct() {
 	   String id = getToken("Enter product id");
+	   Product updatedProduct = warehouse.validateProduct(id); 
 	   String name = getToken("Enter new product name");
 	   String price = getToken("Enter new price");
 	   int inventory = getNumber("Enter new inventory");
 	   String supplier = getToken("Enter new supplier");
-	   Product updatedProduct = warehouse.editProduct(id, name, price, inventory, supplier);
+	   warehouse.editProduct(updatedProduct, name, price, inventory, supplier);
 	   if (updatedProduct == null) {
 		   System.out.println("Could not update product");
 	   }
 	   System.out.println(updatedProduct); 
  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   public void editSupplier() {
 	   System.out.println("Dummy Action");  

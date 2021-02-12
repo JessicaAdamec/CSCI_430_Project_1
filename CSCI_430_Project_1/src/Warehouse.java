@@ -83,24 +83,27 @@ public class Warehouse implements Serializable {
 	  return client;
   }
   
-  public Product editProduct(String id, String name, String price, int inventory, String supplier) {
+  
+  public Product validateProduct(String id) {
 	  Iterator allProducts = warehouse.getProducts();
 	  Product product = null;
 	  while (allProducts.hasNext()){
 		  product = (Product)(allProducts.next());
 		  if (product.getID() == id) {
-			  product.setName(name);
-			  product.setPrice(price);
-			  product.setInventory(inventory);
-			  product.setSupplierID(supplier);
+			  return product;
 		  }
-		  else System.out.println("Invalid product id");
-		  return null;
 	  }
-	  return product;
+	  System.out.println("Invalid product id");
+	  return null;
+  }
+  
+  public void editProduct(Product product, String name, String price, int inventory, String supplierID) {
+	  product.setName(name);
+	  product.setPrice(price);
+	  product.setInventory(inventory);
+	  product.setSupplierID(supplierID);
   }
 
-  
   public static Warehouse retrieve() {
     try {
       FileInputStream file = new FileInputStream("WarehouseData");
