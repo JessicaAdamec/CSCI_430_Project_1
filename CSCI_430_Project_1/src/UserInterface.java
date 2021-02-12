@@ -162,11 +162,28 @@ public class UserInterface {
 	  } 
   
   public void editClient() {
-	   System.out.println("Dummy Action");  
+	   String id = getToken("Enter client id");
+	   String name = getToken("Enter new client name");
+	   String address = getToken("Enter new address");
+	   String phone = getToken("Enter new phone");
+	   Client updatedClient = warehouse.editClient(id, name, address, phone);
+	   if (updatedClient == null) {
+		   System.out.println("Could not update client");
+	   }
+	   System.out.println(updatedClient);
   }
   
   public void editProduct() {
-	   System.out.println("Dummy Action");  
+	   String id = getToken("Enter product id");
+	   String name = getToken("Enter new product name");
+	   String price = getToken("Enter new price");
+	   int inventory = getNumber("Enter new inventory");
+	   String supplier = getToken("Enter new supplier");
+	   Product updatedProduct = warehouse.editProduct(id, name, price, inventory, supplier);
+	   if (updatedProduct == null) {
+		   System.out.println("Could not update product");
+	   }
+	   System.out.println(updatedProduct); 
  }
   
   public void editSupplier() {
@@ -207,7 +224,7 @@ public class UserInterface {
   
   private void save() {
     if (warehouse.save()) {
-      System.out.println("The warehouse has been successfully saved in the file LibraryData \n" );
+      System.out.println("The warehouse has been successfully saved in the file WarehouseData \n" );
     } else {
       System.out.println("There has been an error in saving \n" );
     }
@@ -217,7 +234,7 @@ public class UserInterface {
     try {
       Warehouse tempWarehouse = Warehouse.retrieve();
       if (tempWarehouse != null) {
-        System.out.println(" The Warehouse has been successfully retrieved from the file LibraryData \n" );
+        System.out.println(" The Warehouse has been successfully retrieved from the file WarehouseData \n" );
         warehouse = tempWarehouse;
       } else {
         System.out.println("File doesnt exist; creating new warehouse" );
