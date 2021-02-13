@@ -15,25 +15,25 @@ public class Supplier implements Serializable {
     id = SUPPLIER_STRING + (SupplierIdServer.instance()).getId();
   }
 
-  public String getSupplierName() {
+  public String getName() {
     return name;
   }
-  public String getSupplierPhone() {
+  public String getPhone() {
     return phone;
   }
-  public String getSupplierAddress() {
+  public String getAddress() {
     return address;
   }
-  public String getSupplierId() {
+  public String getId() {
     return id;
   }
-  public void setSupplierName(String newName) {
+  public void setName(String newName) {
     name = newName;
   }
-  public void setSupplierAddress(String newAddress) {
+  public void setAddress(String newAddress) {
     address = newAddress;
   }
-  public void setSupplierPhone(String newPhone) {
+  public void setPhone(String newPhone) {
     phone = newPhone;
   }
   public boolean equals(String id) {

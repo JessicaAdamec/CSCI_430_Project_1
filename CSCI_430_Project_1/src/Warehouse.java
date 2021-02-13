@@ -67,41 +67,70 @@ public class Warehouse implements Serializable {
       return supplierList.getSuppliers();
   }
   
-  public Client editClient(String id, String name, String address, String phone) {
+  public Client validateClient(String id) {
 	  Iterator allClients = warehouse.getClients();
-	  Client client = null;
 	  while (allClients.hasNext()){
-		  client = (Client)(allClients.next());
-		  if (client.getId() == id) {
-			  client.setName(name);
-			  client.setAddress(address);
-			  client.setPhone(phone);
-		  }
-		  else System.out.println("Invalid client id");
-		  return null;
-	  }
-	  return client;
-  }
-  
-  
-  public Product validateProduct(String id) {
-	  Iterator allProducts = warehouse.getProducts();
-	  Product product = null;
-	  while (allProducts.hasNext()){
-		  product = (Product)(allProducts.next());
-		  if (product.getID() == id) {
-			  return product;
+		  Client client = (Client)(allClients.next());
+		  if ((client.getId()).equals(id)) {
+			  return client;
 		  }
 	  }
-	  System.out.println("Invalid product id");
 	  return null;
   }
   
-  public void editProduct(Product product, String name, String price, int inventory, String supplierID) {
+  public Product validateProduct(String id) {
+	  Iterator allProducts = warehouse.getProducts();
+	  while (allProducts.hasNext()){
+		  Product product = (Product)(allProducts.next());
+		  if ((product.getID()).equals(id)) {
+			  return product;
+		  }
+	  }
+	  return null;
+  }
+  
+  public Supplier validateSupplier(String id) {
+	  Iterator allSuppliers = warehouse.getSuppliers();
+	  while (allSuppliers.hasNext()){
+		  Supplier supplier = (Supplier)(allSuppliers.next());
+		  if ((supplier.getId()).equals(id)) {
+			  return supplier;
+		  }
+	  }
+	  return null;
+  }
+  
+  public void editClientName(Client client, String name) {
+	  client.setName(name);
+  }
+  public void editClientAddress(Client client, String address) {
+	  client.setAddress(address);
+  }
+  public void editClientPhone(Client client, String phone) {
+	  client.setPhone(phone);
+  }
+  
+  public void editProductName(Product product, String name) {
 	  product.setName(name);
+  }
+  public void editProductPrice(Product product, String price) {
 	  product.setPrice(price);
+  }
+  public void editProductInventory(Product product, int inventory) {
 	  product.setInventory(inventory);
+  }
+  public void editProductSupplierID(Product product, String supplierID) {
 	  product.setSupplierID(supplierID);
+  }
+  
+  public void editSupplierName(Supplier supplier, String name) {
+	  supplier.setName(name);
+  }
+  public void editSupplierAddress(Supplier supplier, String address) {
+	  supplier.setAddress(address);
+  }
+  public void editSupplierPhone(Supplier supplier, String phone) {
+	  supplier.setPhone(phone);
   }
 
   public static Warehouse retrieve() {

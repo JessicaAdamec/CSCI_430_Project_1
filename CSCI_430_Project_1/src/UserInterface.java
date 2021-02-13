@@ -91,9 +91,6 @@ public class UserInterface {
     do {
       try {
         int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
-		/*
-		 * if (value == EXIT) { System.exit(0); }
-		 */
         if (value >= EXIT && value <= HELP) {
           return value;
         }
@@ -133,8 +130,7 @@ public class UserInterface {
       System.out.println("Could not add client");
     }
     System.out.println(result);
-  } 
-  
+  }   
   public void addProduct() {
 	    String id = getToken("Enter product ID");
 	    String name = getToken("Enter product name");
@@ -148,7 +144,6 @@ public class UserInterface {
 	    }
 	    System.out.println(result);
 	  } 
-
   public void addSupplier() {
 	    String name = getToken("Enter supplier name");
 	    String address = getToken("Enter supplier address");
@@ -163,61 +158,111 @@ public class UserInterface {
   
   public void editClient() {
 	   String id = getToken("Enter client id");
-	   String name = getToken("Enter new client name");
-	   String address = getToken("Enter new address");
-	   String phone = getToken("Enter new phone");
-	   Client updatedClient = warehouse.editClient(id, name, address, phone);
+	   Client updatedClient = warehouse.validateClient(id); 
 	   if (updatedClient == null) {
-		   System.out.println("Could not update client");
+		   System.out.println("Invalid ID");
 	   }
-	   System.out.println(updatedClient);
-  }
-  
+	   else {
+		   System.out.println(1 + " to edit name");
+		   System.out.println(2 + " to edit address");
+		   System.out.println(3 + " to edit phone");
+		   String command = getToken("Enter selection");   
+		   switch (Integer.valueOf(command)) {
+	       case 1:	  	String name = getToken("Enter new client name");        
+	      				warehouse.editClientName(updatedClient, name);
+	      						break;
+	       case 2:      String address = getToken("Enter new client address");        
+						warehouse.editClientAddress(updatedClient, address);
+	     						break;
+	       case 3:      String phone = getToken("Enter new client phone");        
+						warehouse.editClientPhone(updatedClient, phone);
+	      						break;      						
+		   }
+		   if (updatedClient == null) {
+			   System.out.println("Could not update the data");
+		   }
+		   else {
+		   System.out.println("Press " + SAVE + " to save the data: " 
+				   + updatedClient); 
+		   }
+	   }
+  }  
   public void editProduct() {
 	   String id = getToken("Enter product id");
 	   Product updatedProduct = warehouse.validateProduct(id); 
-	   String name = getToken("Enter new product name");
-	   String price = getToken("Enter new price");
-	   int inventory = getNumber("Enter new inventory");
-	   String supplier = getToken("Enter new supplier");
-	   warehouse.editProduct(updatedProduct, name, price, inventory, supplier);
 	   if (updatedProduct == null) {
-		   System.out.println("Could not update product");
+		   System.out.println("Invalid ID");
 	   }
-	   System.out.println(updatedProduct); 
- }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+	   else {
+		   System.out.println(1 + " to edit name");
+		   System.out.println(2 + " to edit price");
+		   System.out.println(3 + " to edit inventory");
+		   System.out.println(4 + " to to edit supplier ID");
+		   String command = getToken("Enter selection");   
+		   switch (Integer.valueOf(command)) {
+	       case 1:	  	String name = getToken("Enter new product name");        
+	       				warehouse.editProductName(updatedProduct, name);
+	       						break;
+	       case 2:      String price = getToken("Enter new product price");        
+						warehouse.editProductPrice(updatedProduct, price);
+	      						break;
+	       case 3:      int inventory = getNumber("Enter new product inventory");        
+						warehouse.editProductInventory(updatedProduct, inventory);
+	       						break;
+	       case 4:      String supplierID = getToken("Enter new product supplier ID");        
+						warehouse.editProductSupplierID(updatedProduct, supplierID);
+								break;       						
+		   }
+		   System.out.println("Press " + SAVE + " to save the data: " 
+				   + updatedProduct); 
+	   }
+  }
   public void editSupplier() {
-	   System.out.println("Dummy Action");  
- }
+	   String id = getToken("Enter supplier id");
+	   Supplier updatedSupplier = warehouse.validateSupplier(id); 
+	   if (updatedSupplier == null) {
+		   System.out.println("Could not update the data");
+	   }
+	   else {
+		   System.out.println(1 + " to edit name");
+		   System.out.println(2 + " to edit address");
+		   System.out.println(3 + " to edit phone");
+		   String command = getToken("Enter selection");   
+		   switch (Integer.valueOf(command)) {
+	       case 1:	  	String name = getToken("Enter new supplier name");        
+	     				warehouse.editSupplierName(updatedSupplier, name);
+	     						break;
+	       case 2:      String address = getToken("Enter new supplier address");        
+						warehouse.editSupplierAddress(updatedSupplier, address);
+	    						break;
+	       case 3:      String phone = getToken("Enter new supplier phone");        
+						warehouse.editSupplierPhone(updatedSupplier, phone);
+	     						break;      						
+		   }
+		   System.out.println("Press " + SAVE + " to save the data: " 
+				   + updatedSupplier); 
+	   }
+  }
 
   public void showClients() {
       Iterator allClients = warehouse.getClients();
+      System.out.println("List of Clients: ");
       while (allClients.hasNext()){
 	  Client client = (Client)(allClients.next());
           System.out.println(client.toString());
       }
-  }
-  
+  }  
   public void showProducts() {
       Iterator allProducts = warehouse.getProducts();
+      System.out.println("List of Products: ");
       while (allProducts.hasNext()){
 	  Product product = (Product)(allProducts.next());
           System.out.println(product.toString());
       }
-  }
-  
+  }  
   public void showSuppliers() {
       Iterator allSuppliers = warehouse.getSuppliers();
+      System.out.println("List of Suppliers: ");
       while (allSuppliers.hasNext()){
 	  Supplier supplier = (Supplier)(allSuppliers.next());
           System.out.println(supplier.toString());
