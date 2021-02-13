@@ -17,11 +17,12 @@ public class UserInterface {
   private static final int SHOW_CLIENTS = 7;
   private static final int SHOW_PRODUCTS = 8;
   private static final int SHOW_SUPPLIERS = 9;
-  private static final int ADD_PRODUCT_TO_CART = 10;
-  private static final int GET_TRANSACTIONS = 11;
-  private static final int SAVE = 12;
-  private static final int RETRIEVE = 13;
-  private static final int HELP = 14;
+  private static final int SHOW_SHOPPING_CART = 10;
+  private static final int ADD_PRODUCT_TO_CART = 11;
+  private static final int GET_TRANSACTIONS = 12;
+  private static final int SAVE = 13;
+  private static final int RETRIEVE = 14;
+  private static final int HELP = 15;
   
   private UserInterface() {
     if (yesOrNo("Look for saved data and  use it?")) {
@@ -101,7 +102,7 @@ public class UserInterface {
   }
 
   public void help() {
-    System.out.println("Enter a number between 0 and 14 as explained below:");
+    System.out.println("Enter a number between 0 and 15 as explained below:");
     System.out.println(EXIT + " to Exit");
     System.out.println(ADD_CLIENT + " to add a client");
     System.out.println(ADD_PRODUCT + " to add a product");
@@ -112,7 +113,8 @@ public class UserInterface {
     System.out.println(EDIT_SUPPLIER + " to edit supplier information");
     System.out.println(SHOW_CLIENTS + " to print clients");
     System.out.println(SHOW_PRODUCTS + " to print products");
-    System.out.println(SHOW_SUPPLIERS + " to print suppliers");    
+    System.out.println(SHOW_SUPPLIERS + " to print suppliers");  
+    System.out.println(SHOW_SHOPPING_CART + " to show shopping cart");
     System.out.println(ADD_PRODUCT_TO_CART + " to add a product to the shopping cart");
     System.out.println(GET_TRANSACTIONS + " to print transactions");
     System.out.println(SAVE + " to save data");
@@ -156,7 +158,8 @@ public class UserInterface {
 	    System.out.println(result);
 	  } 
   
-  public void editClient() {
+  @SuppressWarnings("unused")
+public void editClient() {
 	   String id = getToken("Enter client id");
 	   Client updatedClient = warehouse.validateClient(id); 
 	   if (updatedClient == null) {
@@ -268,11 +271,38 @@ public class UserInterface {
           System.out.println(supplier.toString());
       }
   }
+  public void showShoppingCart() {
+	   String id = getToken("Enter client id");
+	   Client client = warehouse.validateClient(id); 
+	   if (client == null) {
+		   System.out.println("Invalid ID");
+	   }
+	   else {
+		   System.out.println(warehouse.getShoppingCart(client));
+	   }
+  }
   
   public void addProductToCart() {
-      System.out.println("Dummy Action");  
+	   String id = getToken("Enter client id");
+	   Client client = warehouse.validateClient(id); 
+	   if (client == null) {
+		   System.out.println("Invalid ID");
+	   }
+	   else {
+		   String productId = getToken("Enter product id");
+		   Product product = warehouse.validateProduct(productId); 
+		   if (product == null) {
+			   System.out.println("Invalid ID");
+		   }
+		   else {
+			  String quantity = getToken("Enter quantity");
+		      int qty = Integer.valueOf(quantity); 	
+		      warehouse.addItemToCart(client, product, qty);
+		      System.out.println("The value of shopping cart after adding product" +  warehouse.getShoppingCart(client));   
+		   }
+	   }
   }
-
+	   
   public void getTransactions() {
       System.out.println("Dummy Action");   
   }
@@ -322,6 +352,8 @@ public class UserInterface {
         case SHOW_PRODUCTS:		showProducts();
         						break;
         case SHOW_SUPPLIERS:	showSuppliers();
+        						break;
+        case SHOW_SHOPPING_CART: 	showShoppingCart();
         						break;
         case ADD_PRODUCT_TO_CART:	addProductToCart();
         						break;

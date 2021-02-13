@@ -10,12 +10,14 @@ public class Client implements Serializable {
 	  private String id;
 	  private static final String CLIENT_STRING = "C";
 	  private List transactions = new LinkedList();
+	  private ShoppingCart shoppingCart;
 	  
 	  public  Client (String name, String address, String phone) {
 	    this.name = name;
 	    this.address = address;
 	    this.phone = phone;
 	    id = CLIENT_STRING + (ClientIdServer.instance()).getId();
+	    shoppingCart = ShoppingCart.instance(id);	      
 	  }
 
 	  public String getName() {
@@ -30,6 +32,12 @@ public class Client implements Serializable {
 	  public String getId() {
 	    return id;
 	  }
+	  public ShoppingCart getShoppingCart() {
+		 return shoppingCart;
+	  }	  
+	  public void getShoppingCartList() {
+		 shoppingCart.getProducts();
+	  }
 	  public void setName(String newName) {
 	    name = newName;
 	  }
@@ -41,6 +49,9 @@ public class Client implements Serializable {
 	  }
 	  public boolean equals(String id) {
 	    return this.id.equals(id);
+	  }
+	  public void addItemToCart(CartItem cartItem) {
+		  shoppingCart.insertProduct(cartItem);
 	  }
 	  public String toString() {
 	    String string = "Client name: " + name + " Address: " + address + " ID: " + id + " Phone: " + phone;

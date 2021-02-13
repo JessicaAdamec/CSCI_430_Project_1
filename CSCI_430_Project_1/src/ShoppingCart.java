@@ -8,16 +8,16 @@
   
 public class ShoppingCart implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private static List cartItems = new LinkedList(); //Made this static
+	private List cartItems = new LinkedList();
 	private static ShoppingCart shoppingCart;
 	private String clientID;
 
 	public static ShoppingCart instance(String clientID) {
-		if (cartItems == null) { //was productList which cannot be referenced here
-		  return (shoppingCart = new ShoppingCart(clientID));
+		if (shoppingCart == null) { 
+			return (shoppingCart = new ShoppingCart(clientID));	
 		} else {
-		  return shoppingCart;
-		}
+			return shoppingCart;
+		}		
 	}
 	
 	public ShoppingCart(String clientID) {
@@ -35,7 +35,7 @@ public class ShoppingCart implements Serializable {
 	private void writeObject(java.io.ObjectOutputStream output) {
 		try {
 		  output.defaultWriteObject();
-		  output.writeObject(cartItems);//was productList which cannot be referenced here
+		  output.writeObject(shoppingCart);
 		} catch(IOException ioe) {
 		  System.out.println(ioe);
 		}
@@ -54,7 +54,7 @@ public class ShoppingCart implements Serializable {
 			}
 		  }
 		} catch(IOException ioe) {
-		  System.out.println("in Catalog readObject \n" + ioe);
+		  System.out.println("in ShoppingCart readObject \n" + ioe);
 		} catch(ClassNotFoundException cnfe) {
 		  cnfe.printStackTrace();
 		}

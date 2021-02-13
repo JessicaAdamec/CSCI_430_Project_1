@@ -16,8 +16,7 @@ public class CartItem implements Serializable {
 	  this.productID = productID;
 	  this.quantity = quantity;
 	}
-
-
+	
 	public String getProductID() {
 	  return productID;
 	}

@@ -12,7 +12,7 @@ public class Warehouse implements Serializable {
   private ClientList clientList;
   private ProductList productList;
   private SupplierList supplierList;
-  
+    
   private static Warehouse warehouse;
   
   private Warehouse() {
@@ -24,6 +24,7 @@ public class Warehouse implements Serializable {
   public static Warehouse instance() {
     if (warehouse == null) {
       ClientIdServer.instance(); // instantiate all singletons
+      SupplierIdServer.instance();
       return (warehouse = new Warehouse());
     } else {
       return warehouse;
@@ -36,8 +37,7 @@ public class Warehouse implements Serializable {
       return (client);
     }
     return null;
-  }
-    
+  }    
   public Product addProduct(String id, String name, String price, 
 		  int inventory, String supplierID) {
 	    Product product = new Product(id, name, price, inventory, supplierID);
@@ -45,8 +45,7 @@ public class Warehouse implements Serializable {
 	      return (product);
 	    }
 	    return null;
-	  }
- 
+  } 
   public Supplier addSupplier(String name, String address, String phone) {
 	  	Supplier supplier = new Supplier(name, address, phone);
 	    if (supplierList.insertSupplier(supplier)) {
@@ -58,13 +57,14 @@ public class Warehouse implements Serializable {
   public Iterator getClients() {
       return clientList.getClients();
   }
-  
   public Iterator getProducts() {
       return productList.getProducts();
   }
-  
   public Iterator getSuppliers() {
       return supplierList.getSuppliers();
+  }
+  public ShoppingCart getShoppingCart(Client client) {
+	  return client.getShoppingCart();
   }
   
   public Client validateClient(String id) {
@@ -77,7 +77,6 @@ public class Warehouse implements Serializable {
 	  }
 	  return null;
   }
-  
   public Product validateProduct(String id) {
 	  Iterator allProducts = warehouse.getProducts();
 	  while (allProducts.hasNext()){
@@ -88,7 +87,6 @@ public class Warehouse implements Serializable {
 	  }
 	  return null;
   }
-  
   public Supplier validateSupplier(String id) {
 	  Iterator allSuppliers = warehouse.getSuppliers();
 	  while (allSuppliers.hasNext()){
@@ -99,7 +97,7 @@ public class Warehouse implements Serializable {
 	  }
 	  return null;
   }
-  
+
   public void editClientName(Client client, String name) {
 	  client.setName(name);
   }
@@ -132,6 +130,11 @@ public class Warehouse implements Serializable {
   public void editSupplierPhone(Supplier supplier, String phone) {
 	  supplier.setPhone(phone);
   }
+  
+  public void addItemToCart(Client client, Product product, int qty) {
+	  CartItem cartItem = new CartItem(product.getID(), qty);
+      client.addItemToCart(cartItem);
+  }
 
   public static Warehouse retrieve() {
     try {
@@ -139,6 +142,7 @@ public class Warehouse implements Serializable {
       ObjectInputStream input = new ObjectInputStream(file);
       input.readObject();
       ClientIdServer.retrieve(input);
+      SupplierIdServer.retrieve(input);
       return warehouse;
     } catch(IOException ioe) {
       ioe.printStackTrace();
@@ -155,6 +159,7 @@ public class Warehouse implements Serializable {
       ObjectOutputStream output = new ObjectOutputStream(file);
       output.writeObject(warehouse);
       output.writeObject(ClientIdServer.instance());
+      output.writeObject(SupplierIdServer.instance());
       return true;
     } catch(IOException ioe) {
       ioe.printStackTrace();
