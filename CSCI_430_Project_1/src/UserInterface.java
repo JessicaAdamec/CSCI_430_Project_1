@@ -131,7 +131,8 @@ public class UserInterface {
     if (result == null) {
       System.out.println("Could not add client");
     }
-    System.out.println(result);
+	   System.out.println("Press " + SAVE + " to save the data: " 
+			   + result); 
   }   
   public void addProduct() {
 	    String id = getToken("Enter product ID");
@@ -144,7 +145,8 @@ public class UserInterface {
 	    if (result == null) {
 	      System.out.println("Could not add product");
 	    }
-	    System.out.println(result);
+		   System.out.println("Press " + SAVE + " to save the data: " 
+				   + result); 
 	  } 
   public void addSupplier() {
 	    String name = getToken("Enter supplier name");
@@ -155,10 +157,10 @@ public class UserInterface {
 	    if (result == null) {
 	      System.out.println("Could not add supplier");
 	    }
-	    System.out.println(result);
+		   System.out.println("Press " + SAVE + " to save the data: " 
+				   + result); 
 	  } 
   
-  @SuppressWarnings("unused")
 public void editClient() {
 	   String id = getToken("Enter client id");
 	   Client updatedClient = warehouse.validateClient(id); 
@@ -278,6 +280,7 @@ public void editClient() {
 		   System.out.println("Invalid ID");
 	   }
 	   else {
+		   System.out.println("Contents of the shopping cart: ");
 		   System.out.println(warehouse.getShoppingCart(client));
 	   }
   }
@@ -298,7 +301,7 @@ public void editClient() {
 			  String quantity = getToken("Enter quantity");
 		      int qty = Integer.valueOf(quantity); 	
 		      warehouse.addItemToCart(client, product, qty);
-		      System.out.println("The value of shopping cart after adding product" +  warehouse.getShoppingCart(client));   
+		      System.out.println("The value of shopping cart after adding product: " +  warehouse.getShoppingCart(client));   
 		   }
 	   }
   }

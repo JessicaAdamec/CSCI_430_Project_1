@@ -1,3 +1,8 @@
+/**
+  * NAME: William Doyle
+  * DATE: 2/09/2021
+  */
+
 import java.util.*;
 import java.io.*;
 public class Supplier implements Serializable {
