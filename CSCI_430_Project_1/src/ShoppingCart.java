@@ -9,10 +9,10 @@
 public class ShoppingCart implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private List cartItems = new LinkedList();
-	private static ShoppingCart shoppingCart;
-	private String clientID;
+	private static ShoppingCart shoppingCart; //Reevaluate this. This being a static object may be making there only be one shoppingCart
+	private String clientID; //Redundant now that shopping cart is an object in client. Remove references
 
-	public static ShoppingCart instance(String clientID) {
+	public static ShoppingCart instance(String clientID) { //Make a non-instance constructor. This could be affecting things negatively as well.
 		if (shoppingCart == null) { 
 			return (shoppingCart = new ShoppingCart(clientID));	
 		} else {
