@@ -22,7 +22,7 @@ public class Client implements Serializable {
 	    this.address = address;
 	    this.phone = phone;
 	    id = CLIENT_STRING + (ClientIdServer.instance()).getId();
-	    shoppingCart = ShoppingCart.instance(id);	      
+	    shoppingCart = new ShoppingCart();	      
 	  }
 
 	  public String getName() {
