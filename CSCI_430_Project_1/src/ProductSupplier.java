@@ -3,7 +3,8 @@
   * DATE: 2/24/2021
   */
   
-import java.util.Currency;
+import java.io.Serializable;
+import java.text.DecimalFormat;
 
 public class ProductSupplier implements Serializable {
 	private static DecimalFormat priceFormat = new DecimalFormat("##.##");
@@ -28,7 +29,7 @@ public class ProductSupplier implements Serializable {
 	}
 	
 	public int getInventory() {
-		return inventory
+		return inventory;
 	}
 	
 	public WaitList getWaitList() {
@@ -40,7 +41,7 @@ public class ProductSupplier implements Serializable {
 	}
 	
 	public void setInventory(int inventory) {
-		this.inventory = inventory
+		this.inventory = inventory;
 	}
 	
 	public void addInventory(int amount) {
@@ -53,7 +54,7 @@ public class ProductSupplier implements Serializable {
 		
 		if (inventory < 0) {
 			inventoryShort = Math.abs(inventory);
-			inventory = 0
+			inventory = 0;
 		}
 		
 		return inventoryShort;

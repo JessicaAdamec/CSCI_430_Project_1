@@ -2,6 +2,8 @@
   * NAME: Eric Young
   * DATE: 2/24/2021
   */
+
+import java.io.Serializable;
   
   public class WaitListEntry implements Serializable {
 	private String orderId;

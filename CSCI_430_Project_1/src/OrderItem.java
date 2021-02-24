@@ -1,7 +1,10 @@
+
 /**
   * NAME: Eric Young
   * DATE: 2/24/2021
   */
+
+import java.io.Serializable;
 
 public class OrderItem implements Serializable {
 	private String productId;
@@ -27,7 +30,7 @@ public class OrderItem implements Serializable {
 	}
 	
 	public String toString() {
-		String string = "Product ID: " + productID + " Supplier ID: " + supplierIdId + " Quantity: " + quantity;
+		String string = "Product ID: " + productId + " Supplier ID: " + supplierId + " Quantity: " + quantity;
 		return string;
 	}
 }
