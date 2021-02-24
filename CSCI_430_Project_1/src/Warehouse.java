@@ -34,8 +34,8 @@ public class Warehouse implements Serializable {
     return null;
   }    
   public Product addProduct(String id, String name, String price, 
-		  int inventory, String supplierID) {
-	    Product product = new Product(id, name, price, inventory, supplierID);
+		int inventory, String supplierID) {
+	    Product product = new Product(id, name);
 	    if (productList.insertProduct(product)) {
 	      return (product);
 	    }
@@ -106,15 +106,15 @@ public class Warehouse implements Serializable {
   public void editProductName(Product product, String name) {
 	  product.setName(name);
   }
-  public void editProductPrice(Product product, String price) {
-	  product.setPrice(price);
-  }
-  public void editProductInventory(Product product, int inventory) {
-	  product.setInventory(inventory);
-  }
-  public void editProductSupplierID(Product product, String supplierID) {
-	  product.setSupplierID(supplierID);
-  }
+//  public void editProductPrice(Product product, ProductSupplier productSupplier, String price) {
+//	  product.productSupplier.setPrice(price);
+//  }
+//  public void editProductInventory(Product product, int inventory) {
+//	  product.setInventory(inventory);
+//  }
+//  public void editProductSupplierID(Product product, String supplierID) {
+//	  product.setSupplierID(supplierID);
+//  }
   
   public void editSupplierName(Supplier supplier, String name) {
 	  supplier.setName(name);

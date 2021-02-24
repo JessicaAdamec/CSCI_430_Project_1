@@ -30,7 +30,7 @@ public class Order implements Serializable {
 	}
 	
 	public boolean insertOrderItem(OrderItem orderItem) {
-		orderItems.add(client);
+		orderItems.add(orderItems);
 		return true;
 	}
 	
@@ -46,11 +46,11 @@ public class Order implements Serializable {
 		DateFormat dateFormat = new SimpleDateFormat("mm-dd-yyyy hh:mm:ss");
 		String strDate = dateFormat.format(date);
 		
-		String orderItemString;
+		String orderItemString = null;
 		Iterator allItems = getOrderItems();
 		while (allItems.hasNext()){
 			OrderItem orderItem = (OrderItem)(allItems.next());
-			orderItemString += orderItem.toString() + "\n"
+			orderItemString += orderItem.toString() + "\n";
 		}
 
 		String string = "Order ID: " + id + " Client ID: " + clientId + " Date: " + strDate + "\n" + orderItemString;

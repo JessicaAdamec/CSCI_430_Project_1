@@ -39,7 +39,7 @@ public class Product implements Serializable {
 	}
 	
 	public ProductSupplier getProductSuppler(String supplierId) {
-		ProductSupplier retProductSupplier;
+		ProductSupplier retProductSupplier = null;
 		Iterator allProductSuppliers = productSupplierList.getProductSuppliers();
 		while (allProductSuppliers.hasNext()){
 			ProductSupplier productSupplier = (ProductSupplier)(allProductSuppliers.next());

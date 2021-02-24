@@ -2,7 +2,12 @@
   * NAME: Eric Young
   * DATE: 2/24/2021
   */
-  
+
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
   public class TransactionList implements Serializable {
 	private List transactions = new LinkedList();
 	  
@@ -14,8 +19,8 @@
 		return true;
 	}
 	
-	public iterator getTransactions() {
-		return iterator.transactions();
+	public Iterator getTransactions() {
+		return transactions.iterator();
 	}
 	
 	public String toString() {

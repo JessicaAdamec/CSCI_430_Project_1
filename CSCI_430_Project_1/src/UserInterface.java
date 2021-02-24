@@ -209,13 +209,13 @@ public void editClient() {
 	       				warehouse.editProductName(updatedProduct, name);
 	       						break;
 	       case 2:      String price = getToken("Enter new product price");        
-						warehouse.editProductPrice(updatedProduct, price);
+						//warehouse.editProductPrice(updatedProduct, price);
 	      						break;
 	       case 3:      int inventory = getNumber("Enter new product inventory");        
-						warehouse.editProductInventory(updatedProduct, inventory);
+						//warehouse.editProductInventory(updatedProduct, inventory);
 	       						break;
 	       case 4:      String supplierID = getToken("Enter new product supplier ID");        
-						warehouse.editProductSupplierID(updatedProduct, supplierID);
+						//warehouse.editProductSupplierID(updatedProduct, supplierID);
 								break;       						
 		   }
 		   System.out.println("Press " + SAVE + " to save the data: " 
