@@ -14,29 +14,26 @@ public class Order implements Serializable {
 	
 	private String id;
 	private String clientId;
-	private String productId;
-	//may need supplierId as there is a requirement for listing all suppliers of a product.
-	private int quantity;
+	private List orderItems = new LinkedList();
 	private Date date;
 
-	public Order(String clientId, String productId, int quantity) {
+	public Order(String clientId) {
 		id = ORDER_STRING + (OrderIdServer.instance()).getId();
 		this.clientId = clientId;
-		this.productId = productId;
-		this.quantity = quantity;
 		date = Calendar.getInstance().getTime();
 	}
 
-	public String getClient() {
+	public String getClientId() {
 		return clientId;
 	}
 	
-	public String getProduct() {
-		return productId;
+	public boolean insertOrderItem(OrderItem orderItem) {
+		orderItems.add(client);
+		return true;
 	}
 	
-	public int getQuantity() {
-		return quantity
+	public Iterator getOrderItems(){
+		return orderItems.iterator();
 	}
 	
 	public Date getDate() {
@@ -46,9 +43,15 @@ public class Order implements Serializable {
 	public String toString() {
 		DateFormat dateFormat = new SimpleDateFormat("mm-dd-yyyy hh:mm:ss");
 		String strDate = dateFormat.format(date);
+		
+		String orderItemString;
+		Iterator allItems = getOrderItems();
+		while (allItems.hasNext()){
+			OrderItem orderItem = (OrderItem)(allItems.next());
+			orderItemString += orderItem.toString() + "\n"
+		}
 
-		String string = "Order ID: " + id + " Client ID: " + clientId + " Product ID: " + productID + 
-			" Quantity: " + Integer.ToString(quantity) + " Date: " + strDate;
+		String string = "Order ID: " + id + " Client ID: " + clientId + " Date: " + strDate + "\n" + orderItemString;
 		return string;
 	}
 }

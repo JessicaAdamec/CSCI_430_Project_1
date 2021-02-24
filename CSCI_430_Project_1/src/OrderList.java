@@ -23,12 +23,12 @@ public class OrderList implements Serializable {
     }
   }
 
-  public boolean insertClient(Client order) {
+  public boolean insertOrder(Client order) {
 	  orders.add(order);
     return true;
   }
 
-  public Iterator getClients(){
+  public Iterator getOrders(){
      return orders.iterator();
   }
   
