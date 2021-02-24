@@ -15,7 +15,7 @@ import java.util.List;
 	}
 	
 	public Iterator getWaitList() {
-		return Iterator.waitListEntries();
+		return waitListEntries.iterator();
 	}
 	
 	public boolean insertWaitListEntry(WaitListEntry waitListEntry) {
@@ -36,7 +36,7 @@ import java.util.List;
 			System.out.println(2 + " to skip");
 			String command = getToken("Enter selection");   
 		   switch (Integer.valueOf(command)) {
-			   case 1:	  	amount = entry.ProcessEntry(amount)
+			   case 1:	  	amount = entry.ProcessEntry(amount);
 							System.out.println("Processed");        
 									break;
 			   case 2:      System.out.println("Skipped");        
@@ -47,7 +47,7 @@ import java.util.List;
 		return amount;
 	}
 	
-	public String toString() {
+	public String toString(){
 		return waitListEntries.toString();
 	}
   }

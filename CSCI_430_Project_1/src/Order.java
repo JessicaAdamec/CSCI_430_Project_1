@@ -16,6 +16,8 @@ public class Order implements Serializable {
 	private String clientId;
 	private List orderItems = new LinkedList();
 	private Date date;
+	
+	private static final String ORDER_STRING = "O";
 
 	public Order(String clientId) {
 		id = ORDER_STRING + (OrderIdServer.instance()).getId();

@@ -21,10 +21,6 @@ public class Product implements Serializable {
 	  this.name = name;
 	}	  
 
-	public void setPrice(String price) {
-	  this.price = price;
-	}
-
 	public String getID() {
 	  return id;
 	}
@@ -35,7 +31,7 @@ public class Product implements Serializable {
 	
 	public void addProductSupplier(String supplierId, double price) {
 		ProductSupplier productSupplier = new ProductSupplier(supplierId, price);
-		ProductSupplierList.insertProductSupplier(productSupplier);
+		productSupplierList.insertProductSupplier(productSupplier);
 	}
 	
 	public ProductSupplierList getSupplierList() {
@@ -44,10 +40,10 @@ public class Product implements Serializable {
 	
 	public ProductSupplier getProductSuppler(String supplierId) {
 		ProductSupplier retProductSupplier;
-		Iterator allProductSuppliers = ProductSupplierList.getProductSupplers();
+		Iterator allProductSuppliers = productSupplierList.getProductSuppliers();
 		while (allProductSuppliers.hasNext()){
-			ProductSupplier productSupplier = (productSupplier)(allProductSuppliers.next());
-			if (supplierId.equals(productSupplier.getSupplierId()) {
+			ProductSupplier productSupplier = (ProductSupplier)(allProductSuppliers.next());
+			if (supplierId.equals(productSupplier.getSupplierId())) {
 				retProductSupplier = productSupplier;
 				break;
 			}
