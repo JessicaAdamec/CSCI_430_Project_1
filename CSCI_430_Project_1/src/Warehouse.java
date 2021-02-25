@@ -143,7 +143,10 @@ public class Warehouse implements Serializable {
   
   //getOrders() //return all orders from OrderList
   
-  //getTransactions() //return all transactions for a specific Client
+  public Iterator getTransactions(Client client) //return all transactions for a specific Client
+  {
+	  return client.getTransactionList();
+  }
   
   //getInvoice() //return a specific Transaction for a specific Client
   

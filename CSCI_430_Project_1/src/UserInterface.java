@@ -272,8 +272,13 @@ public void editClient() {
   }  
   
   public void showClientsWithBalance() { 
-	//Show all Clients with a balance above $0.00
-	  
+	  Iterator allClients = warehouse.getClients();
+      System.out.println("List of Clients with Outstanding Balance: ");
+      while (allClients.hasNext()){
+	  Client client = (Client)(allClients.next());
+	  	if (client.getBalance() > 0)
+          System.out.println(client.toString());
+      }  
   }
   
   public void showProducts() {
@@ -348,7 +353,20 @@ public void editClient() {
   }
   
   public void showTransactions() {
-		// Show transactions for a specific client
+	  String id = getToken("Enter client id");
+	  Client client = warehouse.validateClient(id); 
+	  
+	  if (client == null) {
+		   System.out.println("Invalid ID");
+	   }
+	   else {
+		   System.out.println("Client transactions: ");
+		   Iterator allTransactions = warehouse.getTransactions(client);
+		   while (allTransactions.hasNext()){
+			  Transaction transaction = (Transaction)(allTransactions.next());
+		          System.out.println(transaction.toString());
+	       }
+	   }
   }
 	  
   public void printInvoice() {
