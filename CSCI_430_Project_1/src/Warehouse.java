@@ -52,9 +52,17 @@ public class Warehouse implements Serializable {
   public Iterator getClients() {
       return clientList.getClients();
   }
+  
+  //getClientsWithBalance()  //return all Clients with a balance
+    
   public Iterator getProducts() {
       return productList.getProducts();
   }
+  
+  //getProductWaitlist() //return qty waitlisted for a specific product
+  
+  //getProductSuppliers()// return suppliers and their price (and inventory?) for a specific product
+  
   public Iterator getSuppliers() {
       return supplierList.getSuppliers();
   }
@@ -131,6 +139,15 @@ public class Warehouse implements Serializable {
       client.addItemToCart(cartItem);
   }
 
+  //processOrder() //Checkout a shoppingCart for a specific Client
+  
+  //getOrders() //return all orders from OrderList
+  
+  //getTransactions() //return all transactions for a specific Client
+  
+  //getInvoice() //return a specific Transaction for a specific Client
+  
+  
   public static Warehouse retrieve() {
     try {
       FileInputStream file = new FileInputStream("WarehouseData");

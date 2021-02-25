@@ -15,14 +15,20 @@ public class UserInterface {
   private static final int EDIT_PRODUCT = 5;
   private static final int EDIT_SUPPLIER = 6;
   private static final int SHOW_CLIENTS = 7;
-  private static final int SHOW_PRODUCTS = 8;
-  private static final int SHOW_SUPPLIERS = 9;
-  private static final int SHOW_SHOPPING_CART = 10;
-  private static final int ADD_PRODUCT_TO_CART = 11;
-  private static final int GET_TRANSACTIONS = 12;
-  private static final int SAVE = 13;
-  private static final int RETRIEVE = 14;
-  private static final int HELP = 15;
+  private static final int SHOW_CLIENTS_WITH_BALANCE = 8;
+  private static final int SHOW_PRODUCTS = 9;
+  private static final int SHOW_PRODUCT_WAITLIST = 10;
+  private static final int SHOW_PRODUCT_SUPPLIERS = 11;
+  private static final int SHOW_SUPPLIERS = 12;
+  private static final int ADD_PRODUCT_TO_CART = 13;
+  private static final int SHOW_SHOPPING_CART = 14;
+  private static final int PROCESS_ORDER = 15;
+  private static final int SHOW_ORDERS = 16;
+  private static final int SHOW_TRANSACTIONS = 17;
+  private static final int PRINT_INVOICE = 18;
+  private static final int SAVE = 19;
+  private static final int RETRIEVE = 20;
+  private static final int HELP = 21;
   
   private UserInterface() {
     if (yesOrNo("Look for saved data and  use it?")) {
@@ -107,18 +113,23 @@ public class UserInterface {
     System.out.println(ADD_CLIENT + " to add a client");
     System.out.println(ADD_PRODUCT + " to add a product");
     System.out.println(ADD_SUPPLIER + " to add a supplier");
-    System.out.println(ADD_PRODUCT + " to add a product");
     System.out.println(EDIT_CLIENT + " to edit client information");
     System.out.println(EDIT_PRODUCT + " to edit product information");
     System.out.println(EDIT_SUPPLIER + " to edit supplier information");
     System.out.println(SHOW_CLIENTS + " to print clients");
+    System.out.println(SHOW_CLIENTS_WITH_BALANCE + " to print clients with a balance");
     System.out.println(SHOW_PRODUCTS + " to print products");
+    System.out.println(SHOW_PRODUCT_WAITLIST + " to print waitlisted products");
+    System.out.println(SHOW_PRODUCT_SUPPLIERS + " to print product suppliers");
     System.out.println(SHOW_SUPPLIERS + " to print suppliers");  
-    System.out.println(SHOW_SHOPPING_CART + " to show shopping cart");
     System.out.println(ADD_PRODUCT_TO_CART + " to add a product to the shopping cart");
-    System.out.println(GET_TRANSACTIONS + " to print transactions");
+    System.out.println(SHOW_SHOPPING_CART + " to show shopping cart");
+    System.out.println(PROCESS_ORDER + " to checkout shopping cart");
+    System.out.println(SHOW_ORDERS + " to show all warehouse orders");
+    System.out.println(SHOW_TRANSACTIONS + " to print transactions");
+    System.out.println(PRINT_INVOICE + " to print an invoice");
     System.out.println(SAVE + " to save data");
-    System.out.println(RETRIEVE + " to retrieve");
+    System.out.println(RETRIEVE + " to retrieve data");
     System.out.println(HELP + " for help");
   }
   
@@ -259,6 +270,12 @@ public void editClient() {
           System.out.println(client.toString());
       }
   }  
+  
+  public void showClientsWithBalance() { 
+	//Show all Clients with a balance above $0.00
+	  
+  }
+  
   public void showProducts() {
       Iterator allProducts = warehouse.getProducts();
       System.out.println("List of Products: ");
@@ -267,6 +284,17 @@ public void editClient() {
           System.out.println(product.toString());
       }
   }  
+  
+  public void showProductWaitlist() {
+	  //Show all waitlisted products with their qty
+  
+  }
+  
+  public void showProductSuppliers() { 
+	//Show suppliers and their price (and inventory?) for a specific product
+	  
+  }
+  
   public void showSuppliers() {
       Iterator allSuppliers = warehouse.getSuppliers();
       System.out.println("List of Suppliers: ");
@@ -274,17 +302,6 @@ public void editClient() {
 	  Supplier supplier = (Supplier)(allSuppliers.next());
           System.out.println(supplier.toString());
       }
-  }
-  public void showShoppingCart() {
-	   String id = getToken("Enter client id");
-	   Client client = warehouse.validateClient(id); 
-	   if (client == null) {
-		   System.out.println("Invalid ID");
-	   }
-	   else {
-		   System.out.println("Contents of the shopping cart: ");
-		   System.out.println(warehouse.getShoppingCart(client));
-	   }
   }
   
   public void addProductToCart() {
@@ -307,10 +324,39 @@ public void editClient() {
 		   }
 	   }
   }
-	   
-  public void getTransactions() {
-      System.out.println("Dummy Action");   
+  
+  public void showShoppingCart() {
+	   String id = getToken("Enter client id");
+	   Client client = warehouse.validateClient(id); 
+	   if (client == null) {
+		   System.out.println("Invalid ID");
+	   }
+	   else {
+		   System.out.println("Contents of the shopping cart: ");
+		   System.out.println(warehouse.getShoppingCart(client));
+	   }
   }
+  
+  public void processOrder() { 
+	//Checkout a shoppingCart for a specific Client
+	  
+  }
+  
+  public void showOrders() {
+	  //Show all orders from OrderList
+ 
+  }
+  
+  public void showTransactions() {
+		// Show transactions for a specific client
+  }
+	  
+  public void printInvoice() {
+	  //Show a specific transaction for a specific client
+	  
+  }
+  
+
   
   private void save() {
     if (warehouse.save()) {
@@ -354,16 +400,28 @@ public void editClient() {
 								break;		
         case SHOW_CLIENTS:		showClients();
         						break;
+        case SHOW_CLIENTS_WITH_BALANCE: showClientsWithBalance();
+        						break;
         case SHOW_PRODUCTS:		showProducts();
+        						break;
+        case SHOW_PRODUCT_WAITLIST: showProductWaitlist();
+        						break;
+        case SHOW_PRODUCT_SUPPLIERS: showProductSuppliers();
         						break;
         case SHOW_SUPPLIERS:	showSuppliers();
         						break;
+        case ADD_PRODUCT_TO_CART:	addProductToCart();
+								break;
         case SHOW_SHOPPING_CART: 	showShoppingCart();
         						break;
-        case ADD_PRODUCT_TO_CART:	addProductToCart();
+        case PROCESS_ORDER: 	processOrder();
         						break;
-        case GET_TRANSACTIONS:  getTransactions();
+        case SHOW_ORDERS:		showOrders();
+        						break;
+        case SHOW_TRANSACTIONS:  showTransactions();
                                 break;
+        case PRINT_INVOICE:		printInvoice();
+        						break;
         case SAVE:              save();
                                 break;
         case RETRIEVE:          retrieve();
