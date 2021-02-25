@@ -59,7 +59,23 @@ public class Warehouse implements Serializable {
       return productList.getProducts();
   }
   
-  //getProductWaitlist() //return qty waitlisted for a specific product
+  public int getProductWaitlist(Product product) //return qty waitlisted for a specific product
+  {
+	  int qty = 0;
+	  
+	  Iterator allSuppliers = product.getSupplierList().getProductSuppliers();
+	  while (allSuppliers.hasNext()){
+		  ProductSupplier productSupplier = (ProductSupplier)(allSuppliers.next());
+		  Iterator allEntries = productSupplier.getWaitList().getWaitList();
+		  
+		  while (allEntries.hasNext()) {
+			  WaitListEntry waitListEntry = (WaitListEntry)(allEntries.next());
+			  qty += waitListEntry.getQuantity();
+		  }
+	  }
+	  
+	  return qty;
+  }
   
   //getProductSuppliers()// return suppliers and their price (and inventory?) for a specific product
   

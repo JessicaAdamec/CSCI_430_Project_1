@@ -292,7 +292,9 @@ public void editClient() {
   
   public void showProductWaitlist() {
 	  //Show all waitlisted products with their qty
-  
+	  String id = getToken("Enter product id");
+	  Product product = warehouse.validateProduct(id); 
+	  System.out.println("Quantity of Waitlist: " + warehouse.getProductWaitlist(product));
   }
   
   public void showProductSuppliers() { 
