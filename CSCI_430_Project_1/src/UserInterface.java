@@ -121,7 +121,7 @@ public class UserInterface {
     System.out.println(RETRIEVE + " to retrieve");
     System.out.println(HELP + " for help");
   }
-
+  
   public void addClient() {
     String name = getToken("Enter client name");
     String address = getToken("Enter address");
@@ -145,8 +145,10 @@ public class UserInterface {
 	    if (result == null) {
 	      System.out.println("Could not add product");
 	    }
+	    String myString = result + " Price: $" + price + " Inventory: "
+	    		+ inventory + " Supplier ID: " + supplierID; 
 		   System.out.println("Press " + SAVE + " to save the data: " 
-				   + result); 
+				   + myString); 
 	  } 
   public void addSupplier() {
 	    String name = getToken("Enter supplier name");

@@ -51,8 +51,10 @@ public class Product implements Serializable {
 		
 		return retProductSupplier;
 	}
+	
+	//getTotalWaitlisted()
 
 	public String toString() {
-	  return "id: " + id + " name: " + name;
+	  return "ID: " + id + " Name: " + name;
 	}
 }
