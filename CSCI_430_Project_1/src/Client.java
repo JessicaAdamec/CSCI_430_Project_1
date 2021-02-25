@@ -13,16 +13,17 @@ public class Client implements Serializable {
 	  private String address;
 	  private String phone;
 	  private String id;
+	  private Double balance;
 	  private static final String CLIENT_STRING = "C";
-	  private List transactions = new LinkedList();
+	  private TransactionList transactionList;
 	  private ShoppingCart shoppingCart;
-	  
+
 	  public  Client (String name, String address, String phone) {
 	    this.name = name;
 	    this.address = address;
 	    this.phone = phone;
 	    id = CLIENT_STRING + (ClientIdServer.instance()).getId();
-	    shoppingCart = new ShoppingCart();	      
+	    shoppingCart = new ShoppingCart();      
 	  }
 
 	  public String getName() {
@@ -37,12 +38,18 @@ public class Client implements Serializable {
 	  public String getId() {
 	    return id;
 	  }
+	  public Double getBalance(){
+		  return balance;
+	  }
 	  public ShoppingCart getShoppingCart() {
 		 return shoppingCart;
 	  }	  
 	  public void getShoppingCartList() {
 		 shoppingCart.getProducts();
 	  }
+	  public void getTransactionList() {
+		transactionList.getTransactions();
+	 }
 	  public void setName(String newName) {
 	    name = newName;
 	  }
@@ -58,6 +65,9 @@ public class Client implements Serializable {
 	  public void addItemToCart(CartItem cartItem) {
 		  shoppingCart.insertProduct(cartItem);
 	  }
+	  public void addTransactions(Transaction transaction) {
+		transactionList.insertTransaction(transaction);
+	}
 	  public String toString() {
 	    String string = "Client name: " + name + " Address: " + address + " ID: " + id + " Phone: " + phone;
 	    return string;
