@@ -394,6 +394,16 @@ public void editClient() {
   
   public void processOrder() { 
 	//Checkout a shoppingCart for a specific Client
+	  //get client shopping cart
+	  //get products
+	  //available products are added to an order
+	  //unavailable products are added to the waitlist
+	  //a Transaction is created and added to Client TransactionList
+	  //an Order is created
+	  //client shopping cart is cleared
+	  //client balance is updated - stage 3?
+	  //display invoice to user showing waitlisted/ordered 
+	  
 	  
   }
   
