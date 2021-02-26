@@ -11,24 +11,25 @@ public class UserInterface {
   private static final int ADD_CLIENT = 1;
   private static final int ADD_PRODUCT = 2;
   private static final int ADD_SUPPLIER = 3;
-  private static final int EDIT_CLIENT = 4;
-  private static final int EDIT_PRODUCT = 5;
-  private static final int EDIT_SUPPLIER = 6;
-  private static final int SHOW_CLIENTS = 7;
-  private static final int SHOW_CLIENTS_WITH_BALANCE = 8;
-  private static final int SHOW_PRODUCTS = 9;
-  private static final int SHOW_PRODUCT_WAITLIST = 10;
-  private static final int SHOW_PRODUCT_SUPPLIERS = 11;
-  private static final int SHOW_SUPPLIERS = 12;
-  private static final int ADD_PRODUCT_TO_CART = 13;
-  private static final int SHOW_SHOPPING_CART = 14;
-  private static final int PROCESS_ORDER = 15;
-  private static final int SHOW_ORDERS = 16;
-  private static final int SHOW_TRANSACTIONS = 17;
-  private static final int PRINT_INVOICE = 18;
-  private static final int SAVE = 19;
-  private static final int RETRIEVE = 20;
-  private static final int HELP = 21;
+  private static final int ADD_PRODUCT_SUPPLIER = 4;
+  private static final int EDIT_CLIENT = 5;
+  private static final int EDIT_PRODUCT = 6;
+  private static final int EDIT_SUPPLIER = 7;
+  private static final int SHOW_CLIENTS = 8;
+  private static final int SHOW_CLIENTS_WITH_BALANCE = 9;
+  private static final int SHOW_PRODUCTS = 10;
+  private static final int SHOW_PRODUCT_WAITLIST = 11;
+  private static final int SHOW_PRODUCT_SUPPLIERS = 12;
+  private static final int SHOW_ALL_SUPPLIERS = 13;
+  private static final int ADD_PRODUCT_TO_CART = 14;
+  private static final int SHOW_SHOPPING_CART = 15;
+  private static final int PROCESS_ORDER = 16;
+  private static final int SHOW_ORDERS = 17;
+  private static final int SHOW_TRANSACTIONS = 18;
+  private static final int PRINT_INVOICE = 19;
+  private static final int SAVE = 20;
+  private static final int RETRIEVE = 21;
+  private static final int HELP = 22;
   
   private UserInterface() {
     if (yesOrNo("Look for saved data and  use it?")) {
@@ -80,6 +81,18 @@ public class UserInterface {
     } while (true);
   }
   
+  public double getDouble(String prompt) {
+	    do {
+	      try {
+	        String item = getToken(prompt);
+	        Double num = Double.valueOf(item);
+	        return num.doubleValue();
+	      } catch (NumberFormatException nfe) {
+	        System.out.println("Please input a number ");
+	      }
+	    } while (true);
+	  }
+  
   public Calendar getDate(String prompt) {
     do {
       try {
@@ -113,15 +126,16 @@ public class UserInterface {
     System.out.println(ADD_CLIENT + " to add a client");
     System.out.println(ADD_PRODUCT + " to add a product");
     System.out.println(ADD_SUPPLIER + " to add a supplier");
+    System.out.println(ADD_PRODUCT_SUPPLIER + " to add a supplier for a product");    
     System.out.println(EDIT_CLIENT + " to edit client information");
     System.out.println(EDIT_PRODUCT + " to edit product information");
     System.out.println(EDIT_SUPPLIER + " to edit supplier information");
-    System.out.println(SHOW_CLIENTS + " to print clients");
+    System.out.println(SHOW_CLIENTS + " to print all clients");
     System.out.println(SHOW_CLIENTS_WITH_BALANCE + " to print clients with a balance");
-    System.out.println(SHOW_PRODUCTS + " to print products");
+    System.out.println(SHOW_PRODUCTS + " to print all products");
     System.out.println(SHOW_PRODUCT_WAITLIST + " to print waitlisted products");
     System.out.println(SHOW_PRODUCT_SUPPLIERS + " to print product suppliers");
-    System.out.println(SHOW_SUPPLIERS + " to print suppliers");  
+    System.out.println(SHOW_ALL_SUPPLIERS + " to print all suppliers");  
     System.out.println(ADD_PRODUCT_TO_CART + " to add a product to the shopping cart");
     System.out.println(SHOW_SHOPPING_CART + " to show shopping cart");
     System.out.println(PROCESS_ORDER + " to checkout shopping cart");
@@ -173,6 +187,27 @@ public class UserInterface {
 		   System.out.println("Press " + SAVE + " to save the data: " 
 				   + result); 
 	  } 
+ 
+  //NEEDS DEBUGGING: Cannot invoke "ProductSupplierList.insertProductSupplier(ProductSupplier)" because "this.productSupplierList" is null
+  public void addProductSupplier() {
+	  //Add an existing Supplier for a specific Product - STAGE 3
+	   String supplierId = getToken("Enter supplier id");
+	   Supplier supplier = warehouse.validateSupplier(supplierId); 
+	   if (supplier == null) {
+		   System.out.println("Could not validate the id");
+	   }
+	   else {
+		   String productId = getToken("Enter product id");
+		   Product updatedProduct = warehouse.validateProduct(productId); 
+		   if (updatedProduct == null) {
+			   System.out.println("Could not validate the id");
+		   }
+		   else {
+			   Double price = getDouble("Enter purchase price");
+			warehouse.addProductSupplier(supplierId, updatedProduct, price);   
+		   }
+	   }
+  } 
   
 public void editClient() {
 	   String id = getToken("Enter client id");
@@ -235,6 +270,12 @@ public void editClient() {
 				   + updatedProduct); 
 	   }
   }
+  
+  public void editProductSupplierList() {
+	  //Add or remove Suppliers for a Product - STAGE 3
+	  
+  }
+  
   public void editSupplier() {
 	   String id = getToken("Enter supplier id");
 	   Supplier updatedSupplier = warehouse.validateSupplier(id); 
@@ -270,7 +311,6 @@ public void editClient() {
           System.out.println(client.toString());
       }
   }  
-  
   public void showClientsWithBalance() { 
 	  Iterator allClients = warehouse.getClients();
       System.out.println("List of Clients with Outstanding Balance: ");
@@ -280,7 +320,6 @@ public void editClient() {
           System.out.println(client.toString());
       }  
   }
-  
   public void showProducts() {
       Iterator allProducts = warehouse.getProducts();
       System.out.println("List of Products: ");
@@ -289,7 +328,6 @@ public void editClient() {
           System.out.println(product.toString());
       }
   }  
-  
   public void showProductWaitlist() {
 	  //Show all waitlisted products with their qty
 	  String id = getToken("Enter product id");
@@ -297,12 +335,24 @@ public void editClient() {
 	  System.out.println("Quantity of Waitlist: " + warehouse.getProductWaitlist(product));
   }
   
-  public void showProductSuppliers() { 
-	//Show suppliers and their price (and inventory?) for a specific product
-	  
-  }
+  //NEEDS Debugging - Cannot invoke "ProductSupplierList.getProductSuppliers()" because "supplierList" is null
+  public void showProductSuppliers() {  
+	  String id = getToken("Enter product id");
+	   Product product = warehouse.validateProduct(id); 
+	   if (product == null) {
+		   System.out.println("Invalid ID");
+	   }
+	   else {
+		  Iterator suppliers = warehouse.getSupplierList(product);
+	      System.out.println("List of Suppliers: ");
+	      while (suppliers.hasNext()){
+		  Supplier supplier = (Supplier)(suppliers.next());
+	          System.out.println(supplier.toString());
+	      }
+	   }
+   }
   
-  public void showSuppliers() {
+  public void showAllSuppliers() {
       Iterator allSuppliers = warehouse.getSuppliers();
       System.out.println("List of Suppliers: ");
       while (allSuppliers.hasNext()){
@@ -310,7 +360,6 @@ public void editClient() {
           System.out.println(supplier.toString());
       }
   }
-  
   public void addProductToCart() {
 	   String id = getToken("Enter client id");
 	   Client client = warehouse.validateClient(id); 
@@ -331,7 +380,6 @@ public void editClient() {
 		   }
 	   }
   }
-  
   public void showShoppingCart() {
 	   String id = getToken("Enter client id");
 	   Client client = warehouse.validateClient(id); 
@@ -376,8 +424,6 @@ public void editClient() {
 	  
   }
   
-
-  
   private void save() {
     if (warehouse.save()) {
       System.out.println("The warehouse has been successfully saved in the file WarehouseData \n" );
@@ -412,6 +458,8 @@ public void editClient() {
         						break;
         case ADD_SUPPLIER:      addSupplier();
         						break;
+        case ADD_PRODUCT_SUPPLIER: addProductSupplier();
+        						break;        						
         case EDIT_CLIENT:     	editClient();
 								break;	       						
         case EDIT_PRODUCT:     	editProduct();
@@ -428,7 +476,7 @@ public void editClient() {
         						break;
         case SHOW_PRODUCT_SUPPLIERS: showProductSuppliers();
         						break;
-        case SHOW_SUPPLIERS:	showSuppliers();
+        case SHOW_ALL_SUPPLIERS:	showAllSuppliers();
         						break;
         case ADD_PRODUCT_TO_CART:	addProductToCart();
 								break;

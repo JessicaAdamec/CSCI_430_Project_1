@@ -6,8 +6,7 @@ public class Warehouse implements Serializable {
   private static final long serialVersionUID = 1L;
   private ClientList clientList;
   private ProductList productList;
-  private SupplierList supplierList;
-    
+  private SupplierList supplierList;    
   private static Warehouse warehouse;
   
   private Warehouse() {
@@ -39,6 +38,7 @@ public class Warehouse implements Serializable {
 	    if (productList.insertProduct(product)) {
 	      return (product);
 	    }
+	    product.addProductSupplier(supplierID, inventory);
 	    return null;
   } 
   public Supplier addSupplier(String name, String address, String phone) {
@@ -49,18 +49,20 @@ public class Warehouse implements Serializable {
 	    return null;
 	  }
   
+  //NEEDS DEBUGGING: Cannot invoke "ProductSupplierList.insertProductSupplier(ProductSupplier)" because "this.productSupplierList" is null
+  public void addProductSupplier(String supplierId, Product productId, double price) {
+	  //Add an existing Supplier for a specific Product - STAGE 3
+	  productId.addProductSupplier(supplierId, price);
+  }
+  
   public Iterator getClients() {
       return clientList.getClients();
   }
-  
-  //getClientsWithBalance()  //return all Clients with a balance
-    
   public Iterator getProducts() {
       return productList.getProducts();
   }
-  
-  public int getProductWaitlist(Product product) //return qty waitlisted for a specific product
-  {
+  public int getProductWaitlist(Product product)  {
+	  //return qty waitlisted for a specific product
 	  int qty = 0;
 	  
 	  Iterator allSuppliers = product.getSupplierList().getProductSuppliers();
@@ -72,12 +74,16 @@ public class Warehouse implements Serializable {
 			  WaitListEntry waitListEntry = (WaitListEntry)(allEntries.next());
 			  qty += waitListEntry.getQuantity();
 		  }
-	  }
-	  
+	  }	  
 	  return qty;
   }
   
-  //getProductSuppliers()// return suppliers and their price (and inventory?) for a specific product
+ //NEEDS Debugging - Cannot invoke "ProductSupplierList.getProductSuppliers()" because "supplierList" is null
+  public Iterator getSupplierList(Product productId) {
+	  ProductSupplierList supplierList = productId.getSupplierList();
+	  Iterator supplierIterator= supplierList.getProductSuppliers(); 
+	  return supplierIterator;
+  }
   
   public Iterator getSuppliers() {
       return supplierList.getSuppliers();
@@ -85,7 +91,6 @@ public class Warehouse implements Serializable {
   public ShoppingCart getShoppingCart(Client client) {
 	  return client.getShoppingCart();
   }
-  
   public Client validateClient(String id) {
 	  Iterator allClients = warehouse.getClients();
 	  while (allClients.hasNext()){
@@ -116,7 +121,6 @@ public class Warehouse implements Serializable {
 	  }
 	  return null;
   }
-
   public void editClientName(Client client, String name) {
 	  client.setName(name);
   }
@@ -125,8 +129,7 @@ public class Warehouse implements Serializable {
   }
   public void editClientPhone(Client client, String phone) {
 	  client.setPhone(phone);
-  }
-  
+  }  
   public void editProductName(Product product, String name) {
 	  product.setName(name);
   }
@@ -140,6 +143,9 @@ public class Warehouse implements Serializable {
 //	  product.setSupplierID(supplierID);
 //  }
   
+//  public void editProductSupplierList(Product product, String supplierID){
+  //add/delete from the list
+  //}
   public void editSupplierName(Supplier supplier, String name) {
 	  supplier.setName(name);
   }
@@ -148,19 +154,17 @@ public class Warehouse implements Serializable {
   }
   public void editSupplierPhone(Supplier supplier, String phone) {
 	  supplier.setPhone(phone);
-  }
-  
+  }  
   public void addItemToCart(Client client, Product product, int qty) {
 	  CartItem cartItem = new CartItem(product.getID(), qty);
       client.addItemToCart(cartItem);
   }
-
+  
   //processOrder() //Checkout a shoppingCart for a specific Client
   
   //getOrders() //return all orders from OrderList
   
-  public Iterator getTransactions(Client client) //return all transactions for a specific Client
-  {
+  public Iterator getTransactions(Client client) { //return all transactions for a specific Client
 	  return client.getTransactionList();
   }
   
@@ -221,7 +225,6 @@ public class Warehouse implements Serializable {
       e.printStackTrace();
     }
   }
-  
   public String toString() {
     return "Warehouse System\n";
   }
