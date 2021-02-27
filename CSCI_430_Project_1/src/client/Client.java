@@ -19,7 +19,7 @@ public class Client implements Serializable {
 	  private String address;
 	  private String phone;
 	  private String id;
-	  private Double balance;
+	  private double balance;
 	  private static final String CLIENT_STRING = "C";
 	  private TransactionList transactionList;
 	  private ShoppingCart shoppingCart;
@@ -29,7 +29,9 @@ public class Client implements Serializable {
 	    this.address = address;
 	    this.phone = phone;
 	    id = CLIENT_STRING + (ClientIdServer.instance()).getId();
-	    shoppingCart = new ShoppingCart();      
+	    shoppingCart = new ShoppingCart();   
+	    this.balance = 0.00;
+	    transactionList = new TransactionList();
 	  }
 
 	  public String getName() {
@@ -74,6 +76,9 @@ public class Client implements Serializable {
 	  public void addTransactions(Transaction transaction) {
 		transactionList.insertTransaction(transaction);
 	}
+	  public void updateBalance(double amount) {
+		  balance += amount;
+	  }
 	  public String toString() {
 	    String string = "Client name: " + name + " Address: " + address + " ID: " + id + " Phone: " + phone;
 	    return string;

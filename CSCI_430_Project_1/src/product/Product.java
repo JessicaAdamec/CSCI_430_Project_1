@@ -4,26 +4,40 @@ package product;
   * DATE: 2/09/2021
   */
   
-  import java.util.*;
-  import java.lang.*;
-  import java.io.*;
+  import java.io.Serializable;
+import java.util.Iterator;
+
+import warehouse.WaitList;
+import warehouse.WaitListEntry;
   
 public class Product implements Serializable {
 	private String id;		//identifier for product
 	private String name; 		//name of the product
 	private ProductSupplierList productSupplierList;
+	private double salePrice;
+	private int inventory;
+	private WaitList waitList;
 
-	public Product (String id, String name, String supplierID, double price, int inventory) {
+	public Product (String id, String name, double salePrice, String supplierID, double purchasePrice, int inventory) {
 	  this.id = id;
 	  this.name = name;
+	  this.salePrice = salePrice;
+	  this.inventory = inventory;
 	  productSupplierList = new ProductSupplierList();
-	  addProductSupplier(supplierID, price, inventory);
+	  addProductSupplier(supplierID, purchasePrice);
+	  waitList = new WaitList();
 	}
 
 	public void setName(String name) {
 	  this.name = name;
 	}	  
-
+	public void setSalePrice(double salePrice) {
+		this.salePrice = salePrice;
+	}
+	public void setInventory(int inventory) {
+		this.inventory = inventory;
+	}
+	
 	public String getID() {
 	  return id;
 	}
@@ -32,9 +46,24 @@ public class Product implements Serializable {
 	  return name;
 	}
 	
-	public void addProductSupplier(String supplierId, double price, int inventory) {
-		ProductSupplier productSupplier = new ProductSupplier(supplierId, price, inventory);
+	public int getInventory() {
+		return inventory;
+	}
+	public Iterator getWaitList() {
+		return waitList.getWaitList();
+	}
+	public double getSalePrice() {
+		return salePrice;
+	}
+	
+	
+	public void addProductSupplier(String supplierId, double price) {
+		ProductSupplier productSupplier = new ProductSupplier(supplierId, price);
 		productSupplierList.insertProductSupplier(productSupplier);
+	}
+	public void addEntryToWaitlist(String orderId, int qty) {
+		WaitListEntry entry = new WaitListEntry(orderId, qty);
+		waitList.insertWaitListEntry(entry);
 	}
 	
 	public ProductSupplierList getSupplierList() {
@@ -54,6 +83,21 @@ public class Product implements Serializable {
 		
 		return retProductSupplier;
 	}
+	public void addInventory(int amount) {
+		inventory += amount;
+	}
+	
+	public int removeInventory(int amount) {
+		inventory -= amount;
+		int inventoryShort = 0;
+		
+		if (inventory < 0) {
+			inventoryShort = Math.abs(inventory);
+			inventory = 0;
+		}		
+		return inventoryShort;
+	}
+
 	
 //	public int getTotalQty(){
 //		

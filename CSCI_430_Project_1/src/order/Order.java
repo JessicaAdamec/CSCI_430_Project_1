@@ -1,8 +1,5 @@
 package order;
-/**
-  * NAME: Eric Young
-  * DATE: 2/21/2021
-  */
+
 
 import java.util.*;
 import java.io.*;
@@ -26,6 +23,9 @@ public class Order implements Serializable {
 		date = Calendar.getInstance().getTime();
 	}
 
+	public String getId() {
+		return id;
+	}
 	public String getClientId() {
 		return clientId;
 	}

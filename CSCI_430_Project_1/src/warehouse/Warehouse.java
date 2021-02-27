@@ -5,6 +5,7 @@ import client.Client;
 import client.ClientIdServer;
 import client.ClientList;
 import order.Order;
+import order.OrderItem;
 import order.OrderList;
 import product.Product;
 import product.ProductList;
@@ -13,6 +14,7 @@ import product.ProductSupplierList;
 import supplier.Supplier;
 import supplier.SupplierIdServer;
 import supplier.SupplierList;
+import transaction.Transaction;
 
 import java.io.*;
 
@@ -49,9 +51,9 @@ public class Warehouse implements Serializable {
     }
     return null;
   }    
-  public Product addProduct(String id, String name, double price, 
+  public Product addProduct(String id, String name, double salePrice, double purchasePrice, 
 		int inventory, String supplierId) {
-	    Product product = new Product(id, name, supplierId, price, inventory);
+	    Product product = new Product(id, name, salePrice, supplierId, purchasePrice, inventory);
 	    if (productList.insertProduct(product)) {
 	      return (product);
 	    }
@@ -67,7 +69,7 @@ public class Warehouse implements Serializable {
 
   public void addProductSupplier(String supplierId, Product productId, double price, int inventory) {
 	  //Add an existing Supplier for a specific Product - STAGE 3
-	  productId.addProductSupplier(supplierId, price, inventory);
+	  productId.addProductSupplier(supplierId, price);
   }
   
   public Iterator getClients() {
@@ -78,17 +80,11 @@ public class Warehouse implements Serializable {
   }
   public int getProductWaitlist(Product product)  {
 	  //return qty waitlisted for a specific product
-	  int qty = 0;
-	  
-	  Iterator allSuppliers = product.getSupplierList().getProductSuppliers();
-	  while (allSuppliers.hasNext()){
-		  ProductSupplier productSupplier = (ProductSupplier)(allSuppliers.next());
-		  Iterator allEntries = productSupplier.getWaitList().getWaitList();
-		  
-		  while (allEntries.hasNext()) {
-			  WaitListEntry waitListEntry = (WaitListEntry)(allEntries.next());
-			  qty += waitListEntry.getQuantity();
-		  }
+	  int qty = 0;	  
+	  Iterator producWaitlist = product.getWaitList();
+	  while (producWaitlist.hasNext()){
+		  WaitListEntry waitListEntry = (WaitListEntry)(producWaitlist.next());
+		  qty += waitListEntry.getQuantity();
 	  }	  
 	  return qty;
   }
@@ -105,7 +101,7 @@ public class Warehouse implements Serializable {
 	  return client.getShoppingCart();
   }
   public Iterator getShoppingCartList(Client client) {
-	 return getShoppingCartList(client);
+	 return client.getShoppingCartList();
   }
   public Client validateClient(String id) {
 	  Iterator allClients = warehouse.getClients();
@@ -149,19 +145,15 @@ public class Warehouse implements Serializable {
   public void editProductName(Product product, String name) {
 	  product.setName(name);
   }
-//  public void editProductPrice(Product product, ProductSupplier productSupplier, String price) {
-//	  product.productSupplier.setPrice(price);
-//  }
-//  public void editProductInventory(Product product, int inventory) {
-//	  product.setInventory(inventory);
-//  }
-//  public void editProductSupplierID(Product product, String supplierID) {
-//	  product.setSupplierID(supplierID);
-//  }
-  
+  public void editProductPrice(Product product, double price) {
+	  product.setSalePrice(price);
+  }
+  public void editProductInventory(Product product, int inventory) {
+	  product.setInventory(inventory);
+  }
 //  public void editProductSupplierList(Product product, String supplierID){
-  //add/delete from the list
-  //}
+//  add/delete from the list - Stage 3
+//  }
   public void editSupplierName(Supplier supplier, String name) {
 	  supplier.setName(name);
   }
@@ -176,7 +168,7 @@ public class Warehouse implements Serializable {
       client.addItemToCart(cartItem);
   }
   
-  public Order processOrder(String clientID){
+  public Order newOrder(String clientID){
     Order order = new Order(clientID);
       if (orderList.insertOrder(order)) {
         return (order);
@@ -184,6 +176,44 @@ public class Warehouse implements Serializable {
       return null;
   } 
 
+  public Invoice processOrder(Client client) {
+	   Iterator cartList = getShoppingCartList(client);	
+	   Order order = warehouse.newOrder(client.getId()); 
+	   String orderId = order.getId();
+	   double totalPurchasePrice = 0.00;
+	   Invoice invoice = new Invoice();
+	      while (cartList.hasNext()){
+			  CartItem cartItem =  (CartItem) cartList.next();
+			  int itemQty = cartItem.getQuantity();
+			  String productId = cartItem.getProductID();  	  
+			  OrderItem orderItem = new OrderItem(productId, itemQty); 
+			  if (order.insertOrderItem(orderItem)) {
+				 //success - added orderItem
+			  }
+			  else {
+				 System.out.println("Failed to add orderItem");
+			  }
+			  Product product = validateProduct(productId);
+			  int inventory = product.getInventory();
+			  double price = product.getSalePrice();
+			  double purchasePrice = price * itemQty;
+			  invoice.addProductString(product, itemQty, purchasePrice);
+			  totalPurchasePrice += purchasePrice;
+			  int inventoryShortage = product.removeInventory(itemQty);
+		    	  if (inventoryShortage > 0) {
+		   	    	   //add negative qty to waitlist  		    		  
+		    		  product.addEntryToWaitlist(orderId, inventoryShortage);
+		            System.out.println("Amount added to waitlist: "+ inventoryShortage);
+	    	  }
+		      }//end while
+	      client.updateBalance(totalPurchasePrice);
+	      String description = "Order Id: " + orderId;
+	      Transaction transaction = new Transaction(description, totalPurchasePrice);
+	      client.addTransactions(transaction);
+	      invoice.addTotalString(totalPurchasePrice);
+	  return invoice;
+	  
+  }
   
   public Iterator getOrders(){
     return orderList.getOrders();  

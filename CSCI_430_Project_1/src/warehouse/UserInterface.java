@@ -1,15 +1,21 @@
 package warehouse;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 
 import client.Client;
 import order.Order;
+import order.OrderItem;
 import product.Product;
 import product.ProductSupplier;
 import supplier.Supplier;
 import transaction.Transaction;
-
-import java.text.*;
-import java.io.*;
 
 public class UserInterface {
 	
@@ -171,15 +177,16 @@ public class UserInterface {
   public void addProduct() {
 	    String id = getToken("Enter product ID");
 	    String name = getToken("Enter product name");
-	    double price = getDouble("Enter price");
+	    double salePrice = getDouble("Enter sale price");
 	    int inventory = getNumber("Enter product inventory");
 	    String supplierID = getToken("Enter product supplier ID");
+	    double purchasePrice = getDouble("Enter purchase price");
 	    Product result;
-	    result = warehouse.addProduct(id, name, price, inventory, supplierID);
+	    result = warehouse.addProduct(id, name, salePrice, purchasePrice, inventory, supplierID);
 	    if (result == null) {
 	      System.out.println("Could not add product");
 	    }
-	    String myString = result + " Price: $" + price + " Inventory: "
+	    String myString = result + " Sale Price: $" + salePrice + " Inventory: "
 	    		+ inventory + " Supplier ID: " + supplierID; 
 		   System.out.println("Press " + SAVE + " to save the data: " 
 				   + myString); 
@@ -258,21 +265,17 @@ public void editClient() {
 		   System.out.println(1 + " to edit name");
 		   System.out.println(2 + " to edit price");
 		   System.out.println(3 + " to edit inventory");
-		   System.out.println(4 + " to to edit supplier ID");
 		   String command = getToken("Enter selection");   
 		   switch (Integer.valueOf(command)) {
 	       case 1:	  	String name = getToken("Enter new product name");        
 	       				warehouse.editProductName(updatedProduct, name);
 	       						break;
-	       case 2:      String price = getToken("Enter new product price");        
-						//warehouse.editProductPrice(updatedProduct, price);
+	       case 2:      double price = getDouble("Enter new product price");        
+						warehouse.editProductPrice(updatedProduct, price);
 	      						break;
 	       case 3:      int inventory = getNumber("Enter new product inventory");        
-						//warehouse.editProductInventory(updatedProduct, inventory);
-	       						break;
-	       case 4:      String supplierID = getToken("Enter new product supplier ID");        
-						//warehouse.editProductSupplierID(updatedProduct, supplierID);
-								break;       						
+						warehouse.editProductInventory(updatedProduct, inventory);
+	       						break;     						
 		   }
 		   System.out.println("Press " + SAVE + " to save the data: " 
 				   + updatedProduct); 
@@ -342,7 +345,6 @@ public void editClient() {
 	  System.out.println("Quantity of Waitlist: " + warehouse.getProductWaitlist(product));
   }
   
-  //NEEDS Debugging - Cannot invoke "ProductSupplierList.getProductSuppliers()" because "supplierList" is null
   public void showProductSuppliers() {  
 	  String id = getToken("Enter product id");
 	   Product product = warehouse.validateProduct(id); 
@@ -400,45 +402,15 @@ public void editClient() {
   }
   
   public void processOrder() { 
-	   //Checkout a shoppingCart for a specific Client
-	   //Get client shopping cart list
 	   String id = getToken("Enter client id");
 	   Client client = warehouse.validateClient(id); 
 	   if (client == null) {
 		   System.out.println("Invalid ID");
 	   }
 	   else {
-		   Iterator cartList = warehouse.getShoppingCartList(client);
-		   Order order = warehouse.processOrder(id); //Create a new Order and insert it into the list
-		      while (cartList.hasNext()){
-		    	  CartItem cartItem =  (CartItem) cartList.next();
-		    	  int itemQty = cartItem.getQuantity();
-		    	  
-		    	  //Product product = //need to derive a Product from a cartItem in order to get inventory
-		    	  //Check Product inventory. If (inventory - qty) >= 0 create an order item, else add negative qty to waitlist
-		   		  //Need to be able to get total qty from PRODUCT class - not implemented in PRODUCT yet
-		    	  int totalQty = 0; //product.getQty();
-		    	  if ((totalQty - itemQty) > 0) {
-	    			 //Create an OrderItem and insert it into the Order
-		    		 //product.getId();
-	    			 //OrderItem orderItem = new OrderItem(productId, qty); 
-//	    			 if (insertOrderItem(orderItem)) {
-//	    				 //success - added orderItem
-//	    			 }
-//	    			 else {
-//	    				//system out error could not add order Item
-//	    			 }
-//	    	       else {
-//	    	    	   //add negative qty to waitlist
-//				   }
-		    	  }
-		      }//end while
-
-			  //a Transaction is created and added to Client TransactionList
-		      //an Order is created
-			  //client shopping cart is cleared
-			  //client balance is updated - stage 3?
-			  //display invoice to user showing waitlisted/ordered - needs updating, now we need to create an invoice class
+		   Invoice invoice = warehouse.processOrder(client);
+		   System.out.println("Invoice: " + invoice.toString());
+		   //client shopping cart is cleared - STAGE 3
 	   }//end else	 
   }
   
