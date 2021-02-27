@@ -405,7 +405,7 @@ public void editClient() {
 		      while (cartList.hasNext()){
 		    	  CartItem cartItem =  (CartItem) cartList.next();
 		    	  int itemQty = cartItem.getQuantity();
-		    	  //Product product = //need to derive a Product from a cartItem in order to get productId and inventory
+		    	  //Product product = //need to derive a Product from a cartItem in order to get inventory
 		    	  //Check Product inventory. If (inventory - qty) >= 0 create an order item, else add negative qty to waitlist
 		   		  //Need to be able to get total qty from PRODUCT class - not implemented in PRODUCT yet
 		    	  int totalQty = 0; //product.getQty();
