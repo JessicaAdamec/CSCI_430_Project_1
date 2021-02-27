@@ -52,6 +52,11 @@ public class Product implements Serializable {
 		return retProductSupplier;
 	}
 	
+//	public int getTotalQty(){
+//		
+//	}
+	
+	
 	//getTotalWaitlisted()
 
 	public String toString() {

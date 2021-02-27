@@ -44,8 +44,8 @@ public class Client implements Serializable {
 	  public ShoppingCart getShoppingCart() {
 		 return shoppingCart;
 	  }	  
-	  public void getShoppingCartList() {
-		 shoppingCart.getProducts();
+	  public Iterator getShoppingCartList() {
+		 return shoppingCart.getProducts();
 	  }
 	  public Iterator getTransactionList() {
 		return transactionList.getTransactions();

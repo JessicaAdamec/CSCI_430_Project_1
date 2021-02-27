@@ -273,7 +273,6 @@ public void editClient() {
   
   public void editProductSupplierList() {
 	  //Add or remove Suppliers for a Product - STAGE 3
-	  
   }
   
   public void editSupplier() {
@@ -393,18 +392,45 @@ public void editClient() {
   }
   
   public void processOrder() { 
-	//Checkout a shoppingCart for a specific Client
-	  //get client shopping cart
-	  //get products
-	  //available products are added to an order
-	  //unavailable products are added to the waitlist
-	  //a Transaction is created and added to Client TransactionList
-	  //an Order is created
-	  //client shopping cart is cleared
-	  //client balance is updated - stage 3?
-	  //display invoice to user showing waitlisted/ordered 
-	  
-	  
+	   //Checkout a shoppingCart for a specific Client
+	   //Get client shopping cart list
+	   String id = getToken("Enter client id");
+	   Client client = warehouse.validateClient(id); 
+	   if (client == null) {
+		   System.out.println("Invalid ID");
+	   }
+	   else {
+		   Iterator cartList = warehouse.getShoppingCartList(client);
+		   Order order = warehouse.processOrder(id); //Create a new Order and insert it into the list
+		      while (cartList.hasNext()){
+		    	  CartItem cartItem =  (CartItem) cartList.next();
+		    	  int itemQty = cartItem.getQuantity();
+		    	  //Product product = //need to derive a Product from a cartItem in order to get productId and inventory
+		    	  //Check Product inventory. If (inventory - qty) >= 0 create an order item, else add negative qty to waitlist
+		   		  //Need to be able to get total qty from PRODUCT class - not implemented in PRODUCT yet
+		    	  int totalQty = 0; //product.getQty();
+		    	  if ((totalQty - itemQty) > 0) {
+	    			 //Create an OrderItem and insert it into an Order
+		    		 //product.getId();
+	    			 //OrderItem orderItem = new OrderItem(productId, qty); 
+//	    			 if (insertOrderItem(orderItem)) {
+//	    				 //success - added orderItem
+//	    			 }
+//	    			 else {
+//	    				//system out error could not add order Item
+//	    			 }
+//	    	       else {
+//	    	    	   //add negative qty to waitlist
+//				   }
+		    	  }
+		      }//end while
+
+			  //a Transaction is created and added to Client TransactionList
+		      //an Order is created
+			  //client shopping cart is cleared
+			  //client balance is updated - stage 3?
+			  //display invoice to user showing waitlisted/ordered - needs updating, now we need to create an invoice class
+	   }//end else	 
   }
   
   public void showOrders() {

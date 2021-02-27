@@ -93,6 +93,9 @@ public class Warehouse implements Serializable {
   public ShoppingCart getShoppingCart(Client client) {
 	  return client.getShoppingCart();
   }
+  public Iterator getShoppingCartList(Client client) {
+	 return getShoppingCartList(client);
+  }
   public Client validateClient(String id) {
 	  Iterator allClients = warehouse.getClients();
 	  while (allClients.hasNext()){
