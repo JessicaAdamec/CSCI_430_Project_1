@@ -23,7 +23,7 @@ public class OrderList implements Serializable {
     }
   }
 
-  public boolean insertOrder(Client order) {
+  public boolean insertOrder(Order order) {
 	  orders.add(order);
     return true;
   }

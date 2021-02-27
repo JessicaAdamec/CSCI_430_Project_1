@@ -408,8 +408,12 @@ public void editClient() {
   }
   
   public void showOrders() {
-	  //Show all orders from OrderList
- 
+    Iterator allOrders = warehouse.getOrders();
+    System.out.println("List of Orders: ");
+    while (allOrders.hasNext()){
+    Order order = (Order)(allOrders.next());
+        System.out.println(order.toString());
+    }
   }
   
   public void showTransactions() {
@@ -430,8 +434,15 @@ public void editClient() {
   }
 	  
   public void printInvoice() {
-	  //Show a specific transaction for a specific client
-	  
+    String id = getToken("Enter client id");
+    Client client = warehouse.validateClient(id); 
+    if (client == null) {
+      System.out.println("Invalid ID");
+    }
+    else {
+      System.out.println("Transactions: ");
+      System.out.println(warehouse.getTransactions(client));
+    }
   }
   
   private void save() {

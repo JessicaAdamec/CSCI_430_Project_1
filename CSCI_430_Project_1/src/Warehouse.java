@@ -6,13 +6,15 @@ public class Warehouse implements Serializable {
   private static final long serialVersionUID = 1L;
   private ClientList clientList;
   private ProductList productList;
-  private SupplierList supplierList;    
+  private SupplierList supplierList;   
+  private OrderList orderList;
   private static Warehouse warehouse;
   
   private Warehouse() {
     clientList = ClientList.instance();
     productList = ProductList.instance();
     supplierList = SupplierList.instance();
+    orderList = OrderList.instance();
   }
   
   public static Warehouse instance() {
@@ -160,11 +162,20 @@ public class Warehouse implements Serializable {
       client.addItemToCart(cartItem);
   }
   
-  //processOrder() //Checkout a shoppingCart for a specific Client
+  public Order processOrder(String clientID){
+    Order order = new Order(clientID);
+      if (orderList.insertOrder(order)) {
+        return (order);
+      }
+      return null;
+  } //Checkout a shoppingCart for a specific Client
+
   
-  //getOrders() //return all orders from OrderList
+  public Iterator getOrders(){
+    return orderList.getOrders();  
+  }
   
-  public Iterator getTransactions(Client client) { //return all transactions for a specific Client
+  public Iterator getTransactions(Client client) { 
 	  return client.getTransactionList();
   }
   
