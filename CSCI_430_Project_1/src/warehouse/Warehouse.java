@@ -215,6 +215,13 @@ public class Warehouse implements Serializable {
 	  
   }
   
+  public void processPayment(Client client, String description, double payment) {
+	  client.updateBalance((payment * -1));
+	  
+	  Transaction transaction = new Transaction(description, payment);
+      client.addTransactions(transaction);
+  }
+  
   public Iterator getOrders(){
     return orderList.getOrders();  
   }

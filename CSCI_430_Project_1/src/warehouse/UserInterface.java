@@ -37,14 +37,17 @@ public class UserInterface {
   private static final int SHOW_PRODUCT_SUPPLIERS = 12;
   private static final int SHOW_ALL_SUPPLIERS = 13;
   private static final int ADD_PRODUCT_TO_CART = 14;
-  private static final int SHOW_SHOPPING_CART = 15;
-  private static final int PROCESS_ORDER = 16;
-  private static final int SHOW_ORDERS = 17;
-  private static final int SHOW_TRANSACTIONS = 18;
-  private static final int PRINT_INVOICE = 19;
-  private static final int SAVE = 20;
-  private static final int RETRIEVE = 21;
-  private static final int HELP = 22;
+  private static final int EDIT_CART = 15;
+  private static final int SHOW_SHOPPING_CART = 16;
+  private static final int PROCESS_ORDER = 17;
+  private static final int PROCESS_PAYMENT = 18;
+  private static final int PROCESS_SHIPMENT = 19;
+  private static final int SHOW_ORDERS = 20;
+  private static final int SHOW_TRANSACTIONS = 21;
+  private static final int PRINT_INVOICE = 22;
+  private static final int SAVE = 23;
+  private static final int RETRIEVE = 24;
+  private static final int HELP = 25;
   
   private UserInterface() {
     if (yesOrNo("Look for saved data and  use it?")) {
@@ -152,8 +155,11 @@ public class UserInterface {
     System.out.println(SHOW_PRODUCT_SUPPLIERS + " to print product suppliers");
     System.out.println(SHOW_ALL_SUPPLIERS + " to print all suppliers");  
     System.out.println(ADD_PRODUCT_TO_CART + " to add a product to the shopping cart");
+    System.out.println(EDIT_CART + " to edit products in the shopping cart");
     System.out.println(SHOW_SHOPPING_CART + " to show shopping cart");
     System.out.println(PROCESS_ORDER + " to checkout shopping cart");
+    System.out.println(PROCESS_PAYMENT + " to process a client payment.");
+    System.out.println(PROCESS_SHIPMENT + " to process a new shipment");
     System.out.println(SHOW_ORDERS + " to show all warehouse orders");
     System.out.println(SHOW_TRANSACTIONS + " to print transactions");
     System.out.println(PRINT_INVOICE + " to print an invoice");
@@ -389,6 +395,11 @@ public void editClient() {
 		   }
 	   }
   }
+  
+  public void editCart() {
+	  //Edit the cart - S
+  }
+  
   public void showShoppingCart() {
 	   String id = getToken("Enter client id");
 	   Client client = warehouse.validateClient(id); 
@@ -412,6 +423,24 @@ public void editClient() {
 		   System.out.println("Invoice: " + invoice.toString());
 		   //client shopping cart is cleared - STAGE 3
 	   }//end else	 
+  }
+  
+  public void processPayment() {
+	  //Process a payment - STAGE 3
+	   String id = getToken("Enter client id");
+	   Client client = warehouse.validateClient(id); 
+	   if (client == null) {
+		   System.out.println("Invalid ID");
+	   } else {
+		   String description = "";
+		   description += getToken("Enter card number");
+		   double payment = getDouble("Enter payment amount");
+		   warehouse.processPayment(client, description, payment);
+	   }
+  }
+  
+  public void processShipment() {
+	  //Process a shipment - STAGE 3
   }
   
   public void showOrders() {
@@ -508,9 +537,15 @@ public void editClient() {
         						break;
         case ADD_PRODUCT_TO_CART:	addProductToCart();
 								break;
+        case EDIT_CART:			editCart();
+        						break;
         case SHOW_SHOPPING_CART: 	showShoppingCart();
         						break;
         case PROCESS_ORDER: 	processOrder();
+        						break;
+        case PROCESS_PAYMENT:	processPayment();
+        						break;
+        case PROCESS_SHIPMENT:	processShipment();
         						break;
         case SHOW_ORDERS:		showOrders();
         						break;
