@@ -26,6 +26,10 @@ public class CartItem implements Serializable {
 	  return quantity;
 	}
 	
+	public void setQuantity(int quantity) {
+		  this.quantity = quantity;
+	}
+	
 	public String toString() {
 	  return "Product ID: " + productID + " Quantity: " + Integer.toString(quantity);
 	}

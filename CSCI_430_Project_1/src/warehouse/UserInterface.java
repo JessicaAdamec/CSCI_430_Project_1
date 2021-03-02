@@ -397,7 +397,27 @@ public void editClient() {
   }
   
   public void editCart() {
-	  //Edit the cart - S
+	   String id = getToken("Enter client id");
+	   Client client = warehouse.validateClient(id); 
+	   if (client == null) {
+		   System.out.println("Invalid ID");
+	   }
+	   else {
+		   System.out.println("Contents of the shopping cart: ");
+		   System.out.println(warehouse.getShoppingCart(client));
+		   String productId = "";
+		   while (!productId.equals("EXIT")) { 
+			   productId = getToken("Enter product id or EXIT to exit");
+			   CartItem cartItem = warehouse.validateCartItem(productId, client);
+			   if (cartItem == null) {
+				   System.out.println("Invalid ID");
+			   } else {
+				   int qty = getNumber("Enter new quantity");
+				   cartItem.setQuantity(qty);
+				   System.out.println(cartItem.toString());
+			   }
+		   }
+	   }
   }
   
   public void showShoppingCart() {

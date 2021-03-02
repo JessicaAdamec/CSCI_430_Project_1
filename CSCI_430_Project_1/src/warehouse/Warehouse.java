@@ -133,6 +133,17 @@ public class Warehouse implements Serializable {
 	  }
 	  return null;
   }
+  
+  public CartItem validateCartItem(String productId, Client client) {
+	  Iterator allCartItems = warehouse.getShoppingCartList(client);
+	  while (allCartItems.hasNext()){
+		  CartItem cartItem = (CartItem)(allCartItems.next());
+		  if ((cartItem.getProductID()).equals(productId)) {
+			  return cartItem;
+		  }
+	  }
+	  return null;
+  }
   public void editClientName(Client client, String name) {
 	  client.setName(name);
   }
