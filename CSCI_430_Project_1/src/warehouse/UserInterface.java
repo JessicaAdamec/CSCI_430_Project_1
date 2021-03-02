@@ -348,7 +348,7 @@ public void editClient() {
 	  //Show all waitlisted products with their qty
 	  String id = getToken("Enter product id");
 	  Product product = warehouse.validateProduct(id); 
-	  System.out.println("Quantity of Waitlist: " + warehouse.getProductWaitlist(product));
+	  System.out.println("Quantity of Waitlist: " + warehouse.getProductWaitlistQty(product));
   }
   
   public void showProductSuppliers() {  
@@ -410,7 +410,8 @@ public void editClient() {
 			   productId = getToken("Enter product id or EXIT to exit");
 			   CartItem cartItem = warehouse.validateCartItem(productId, client);
 			   if (cartItem == null) {
-				   System.out.println("Invalid ID");
+				   if(!productId.equals("EXIT"))
+					   System.out.println("Invalid ID");
 			   } else {
 				   int qty = getNumber("Enter new quantity");
 				   cartItem.setQuantity(qty);
@@ -461,6 +462,40 @@ public void editClient() {
   
   public void processShipment() {
 	  //Process a shipment - STAGE 3
+	  Invoice invoice = new Invoice();
+	  
+	  String productId = "";
+	  while (!productId.equals("EXIT")) {
+		  productId = getToken("Enter product id");
+		  Product product = warehouse.validateProduct(productId); 
+		  if (product == null) {
+			  if (!productId.equals("EXIT"))
+				  System.out.println("Invalid ID");
+		   }
+		   else {
+			   int qty = getNumber("Enter product qty");
+			   Iterator allWaitListEntries = warehouse.getProductWaitlist(product);
+			   while (allWaitListEntries.hasNext() & qty > 0){
+				   WaitListEntry waitListEntry = (WaitListEntry)(allWaitListEntries.next());
+				   System.out.println(waitListEntry.toString());
+				   String entry = getToken("Process this Waitlisted Order Item? (Y/N)");
+				   if (entry.toLowerCase().equals("y")) {
+					   if (qty > waitListEntry.getQuantity()) {
+						   invoice.addWaitListedItenSting(product, waitListEntry);
+						   qty = waitListEntry.processEntry(qty);
+					   } else {
+						   System.out.println("Insufficient items to fill order");
+					   }
+				   }
+		       }
+			   
+			   if (qty > 0) {
+				   product.addInventory(qty);
+			   }
+		   }
+	  }
+	  
+	  System.out.println(invoice.toString());
   }
   
   public void showOrders() {

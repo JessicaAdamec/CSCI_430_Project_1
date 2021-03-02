@@ -78,16 +78,22 @@ public class Warehouse implements Serializable {
   public Iterator getProducts() {
       return productList.getProducts();
   }
-  public int getProductWaitlist(Product product)  {
+  public int getProductWaitlistQty(Product product)  {
 	  //return qty waitlisted for a specific product
 	  int qty = 0;	  
-	  Iterator producWaitlist = product.getWaitList();
-	  while (producWaitlist.hasNext()){
-		  WaitListEntry waitListEntry = (WaitListEntry)(producWaitlist.next());
+	  Iterator productWaitlist = product.getWaitList();
+	  while (productWaitlist.hasNext()){
+		  WaitListEntry waitListEntry = (WaitListEntry)(productWaitlist.next());
 		  qty += waitListEntry.getQuantity();
 	  }	  
 	  return qty;
   }
+  
+  public Iterator getProductWaitlist(Product product)  {
+	  Iterator productWaitList = product.getWaitList();
+	  return productWaitList;
+  }
+  
  public Iterator getSupplierList(Product productId) {
 	  ProductSupplierList supplierList = productId.getSupplierList();
 	  Iterator supplierIterator= supplierList.getProductSuppliers(); 
@@ -231,6 +237,10 @@ public class Warehouse implements Serializable {
 	  
 	  Transaction transaction = new Transaction(description, payment);
       client.addTransactions(transaction);
+  }
+  
+  public void processWaitList() {
+	  
   }
   
   public Iterator getOrders(){

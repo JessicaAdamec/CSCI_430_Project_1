@@ -19,6 +19,13 @@ public class Invoice {
 		invoiceString += " Total: $" + strTotalPrice;
 	}
 	
+	public void addWaitListedItenSting(Product product, WaitListEntry entry) {
+		String productStr = product.toString();
+		String entryStr = entry.toString();
+		
+		invoiceString += productStr + entryStr;
+	}
+	
 	public String toString() {
 	    return invoiceString;
 	}

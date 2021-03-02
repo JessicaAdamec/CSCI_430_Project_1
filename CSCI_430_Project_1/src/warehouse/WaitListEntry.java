@@ -35,6 +35,16 @@ import java.io.Serializable;
 		return quantity;
 	}
 	
+	public int processEntry(int qty) {
+		quantity = quantity - qty;
+		if (quantity < 0) {
+			qty = -quantity; //return the remaining quantity.
+			quantity = 0;
+		}
+		
+		return qty;
+	}
+	
 	public String toString() {
 		return "Order ID: " + orderId + " Quantity: " + quantity;
 	}
