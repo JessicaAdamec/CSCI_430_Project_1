@@ -40,23 +40,14 @@ public class WarehouseContext {
   private static WarehouseContext context;
   private int currentState;
   private int currentUser;
-  private int[][] nextState;
   private WarehouseState[] states;
+  private int[][] nextState;
   public static final int IsClient = 0;
   public static final int IsClerk = 1;
   public static final int IsManager = 2;
   private String clientID;
   
-  
-  
-  private WarehouseContext() {
-    if (yesOrNo("Look for saved data and  use it?")) {
-      retrieve();
-    } else {
-      warehouse = Warehouse.instance();
-    }
-  }
-  
+
   public String getToken(String prompt) {
     do {
       try {
@@ -514,6 +505,17 @@ public class WarehouseContext {
       cnfe.printStackTrace();
     }
   }  
+  private void terminate()
+  {
+   if (yesOrNo("Save data?")) {
+      if (warehouse.save()) {
+         System.out.println(" The Warehouse has been successfully saved in the file WarehouseData \n" );
+       } else {
+         System.out.println(" There has been an error in saving \n" );
+       }
+     }
+   System.out.println(" Goodbye \n "); System.exit(0);
+  }
   public void process() {
     int command;
     help();
@@ -578,11 +580,16 @@ public class WarehouseContext {
 
   //Project 2 Code
   public void setLogin(int code) {
-	  currentUser = code;
+	currentUser = code;
   }
-
   public void setClient(String cID) {
 	clientID = cID;	
+  }
+  public int getLogin() {
+	return currentUser;
+  }
+  public String getClient() { 
+	return clientID;
   }
 
   public void changeState(int transition) {
@@ -596,24 +603,34 @@ public class WarehouseContext {
     states[currentState].run();
   }
   
-  private void terminate()
-  {
-   if (yesOrNo("Save data?")) {
-      if (warehouse.save()) {
-         System.out.println(" The Warehouse has been successfully saved in the file WarehouseData \n" );
-       } else {
-         System.out.println(" There has been an error in saving \n" );
-       }
-     }
-   System.out.println(" Goodbye \n "); System.exit(0);
+  private WarehouseContext() { //constructor
+    System.out.println("In WarehouseContext constructor");
+    if (yesOrNo("Look for saved data and  use it?")) {
+      retrieve();
+    } else {
+      warehouse = Warehouse.instance();
+    }
+    // set up the FSM and transition table;
+    states = new WarehouseState[3];  //magic numbers, not sure why Library example has 3 here, maybe it should be 4
+    states[0] = ClientState.instance();
+    states[1] = ClerkState.instance();
+    states[2]=  ManagerState.instance();
+    states[3]=  Loginstate.instance();
+    nextState = new int[3][3];//magic numbers, not sure why Library example has 3 here, maybe it should be 4
+    //need to verify this matrix, copied from Library example
+    nextState[0][0] = 3;nextState[0][1] = 1;nextState[0][2] = -2;
+    nextState[1][0] = 3;nextState[1][1] = 0;nextState[1][2] = -2;
+    nextState[2][0] = 0;nextState[2][1] = 1;nextState[2][2] = -1;
+    nextState[3][0] = 0;nextState[3][1] = 1;nextState[3][2] = -1;
+    currentState = 3;
   }
-  
+   
   public static WarehouseContext instance() {
-	    if (context == null) {
-	       System.out.println("calling constructor");
-	      context = new WarehouseContext();
-	    }
-	    return context;
+	if (context == null) {
+	   System.out.println("calling constructor");
+	   context = new WarehouseContext();
+	}
+	return context;
   }
   
 }
