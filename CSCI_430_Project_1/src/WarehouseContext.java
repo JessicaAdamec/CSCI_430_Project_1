@@ -5,9 +5,8 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-public class UserInterface {
+public class WarehouseContext {
 	
-  private static UserInterface userInterface;
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Warehouse warehouse;
   private static final int EXIT = 0;
@@ -37,7 +36,20 @@ public class UserInterface {
   private static final int RETRIEVE = 24;
   private static final int HELP = 25;
   
-  private UserInterface() {
+  //Project 2 Code
+  private static WarehouseContext context;
+  private int currentState;
+  private int currentUser;
+  private int[][] nextState;
+  private WarehouseState[] states;
+  public static final int IsClient = 0;
+  public static final int IsClerk = 1;
+  public static final int IsManager = 2;
+  private String clientID;
+  
+  
+  
+  private WarehouseContext() {
     if (yesOrNo("Look for saved data and  use it?")) {
       retrieve();
     } else {
@@ -45,13 +57,6 @@ public class UserInterface {
     }
   }
   
-  public static UserInterface instance() {
-    if (userInterface == null) {
-      return userInterface = new UserInterface();
-    } else {
-      return userInterface;
-    }
-  }
   public String getToken(String prompt) {
     do {
       try {
@@ -568,6 +573,47 @@ public class UserInterface {
     }
   }
   public static void main(String[] s) {
-    UserInterface.instance().process();
+    WarehouseContext.instance().process();
   }
+
+  //Project 2 Code
+  public void setLogin(int code) {
+	  currentUser = code;
+  }
+
+  public void setClient(String cID) {
+	clientID = cID;	
+  }
+
+  public void changeState(int transition) {
+    //System.out.println("current state " + currentState + " \n \n ");
+    currentState = nextState[currentState][transition];
+    if (currentState == -2) 
+      {System.out.println("Error has occurred"); terminate();}
+    if (currentState == -1) 
+      terminate();
+    //System.out.println("current state " + currentState + " \n \n ");
+    states[currentState].run();
+  }
+  
+  private void terminate()
+  {
+   if (yesOrNo("Save data?")) {
+      if (warehouse.save()) {
+         System.out.println(" The Warehouse has been successfully saved in the file WarehouseData \n" );
+       } else {
+         System.out.println(" There has been an error in saving \n" );
+       }
+     }
+   System.out.println(" Goodbye \n "); System.exit(0);
+  }
+  
+  public static WarehouseContext instance() {
+	    if (context == null) {
+	       System.out.println("calling constructor");
+	      context = new WarehouseContext();
+	    }
+	    return context;
+  }
+  
 }
