@@ -9,6 +9,8 @@ public class WarehouseContext {
 	
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Warehouse warehouse;
+  
+  //We can remove this code once we're done copying into the new states
   private static final int EXIT = 0;
   private static final int ADD_CLIENT = 1;
   private static final int ADD_PRODUCT = 2;
@@ -108,8 +110,9 @@ public class WarehouseContext {
     } while (true);
   }
 
+//Update once new states are complete
   public void help() {
-    System.out.println("Enter a number between 0 and 15 as explained below:");
+    System.out.println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
     System.out.println(EXIT + " to Exit");
     System.out.println(ADD_CLIENT + " to add a client");
     System.out.println(ADD_PRODUCT + " to add a product");
@@ -138,6 +141,7 @@ public class WarehouseContext {
     System.out.println(HELP + " for help");
   }
   
+//Remove most of this code once new states are complete
   public void addClient() {
     String name = getToken("Enter client name");
     String address = getToken("Enter address");
@@ -516,6 +520,8 @@ public class WarehouseContext {
      }
    System.out.println(" Goodbye \n "); System.exit(0);
   }
+  
+//Update once new states are complete
   public void process() {
     int command;
     help();
@@ -611,18 +617,18 @@ public class WarehouseContext {
       warehouse = Warehouse.instance();
     }
     // set up the FSM and transition table;
-    states = new WarehouseState[3];  //magic numbers, not sure why Library example has 3 here, maybe it should be 4
-    states[0] = ClientState.instance();
-    states[1] = ClerkState.instance();
-    states[2]=  ManagerState.instance();
-    states[3]=  Loginstate.instance();
-    nextState = new int[3][3];//magic numbers, not sure why Library example has 3 here, maybe it should be 4
-    //need to verify this matrix, copied from Library example
-    nextState[0][0] = 3;nextState[0][1] = 1;nextState[0][2] = -2;
-    nextState[1][0] = 3;nextState[1][1] = 0;nextState[1][2] = -2;
-    nextState[2][0] = 0;nextState[2][1] = 1;nextState[2][2] = -1;
-    nextState[3][0] = 0;nextState[3][1] = 1;nextState[3][2] = -1;
-    currentState = 3;
+//    states = new WarehouseState[3];  //magic numbers, not sure why Library example has 3 here, maybe it should be 4
+//    states[0] = ClientState.instance();
+//    states[1] = ClerkState.instance();
+//    states[2]=  ManagerState.instance();
+//    states[3]=  Loginstate.instance();
+//    nextState = new int[3][3];//magic numbers, not sure why Library example has 3 here, maybe it should be 4
+//    //need to verify this matrix, copied from Library example
+//    nextState[0][0] = 3;nextState[0][1] = 1;nextState[0][2] = -2;
+//    nextState[1][0] = 3;nextState[1][1] = 0;nextState[1][2] = -2;
+//    nextState[2][0] = 0;nextState[2][1] = 1;nextState[2][2] = -1;
+//    nextState[3][0] = 0;nextState[3][1] = 1;nextState[3][2] = -1;
+//    currentState = 3;
   }
    
   public static WarehouseContext instance() {

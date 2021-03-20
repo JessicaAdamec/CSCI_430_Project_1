@@ -1,33 +1,31 @@
+//Class by Jessica Adamec
+//Created 3/20/2021 for CSCI 430
 
 import java.util.*;
 import java.text.*;
 import java.io.*;
 
 public class ClerkState extends WarehouseState {
-	
-  private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-  private static Warehouse warehouse;
-  private WarehouseContext context;
-  private static ClerkState instance;
-  
-  //Copied from Library example - need to update with our methods
-//  private static final int EXIT = 0;
-//  private static final int ADD_MEMBER = 1;
-//  private static final int ADD_BOOKS = 2;
-//  private static final int ISSUE_BOOKS = 3;
-//  private static final int RETURN_BOOKS = 4;
-//  private static final int REMOVE_BOOKS = 6;
-//  private static final int PLACE_HOLD = 7;
-//  private static final int REMOVE_HOLD = 8;
-//  private static final int PROCESS_HOLD = 9;
-//  private static final int GET_TRANSACTIONS = 10;
-//  private static final int USERMENU = 11;
-//  private static final int HELP = 13;
+		
+	private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+	private static Warehouse warehouse;
+	private WarehouseContext context;
+	private static ClerkState instance;
+	  
+	private static final int EXIT = 0;
+	private static final int ADD_CLIENT = 1;
+	private static final int SHOW_PRODUCTS = 2;
+	private static final int SHOW_CLIENTS = 3;
+	private static final int SHOW_CLIENTS_WITH_BALANCE = 4;
+	private static final int BECOME_CLIENT = 6;
+	private static final int DISPLAY_WAITLIST = 7;
+	private static final int RECEIVE_SHIPMENT = 8;
+	private static final int LOGOUT = 9;
+	private static final int HELP = 10;
 
   private ClerkState() {
       super();
       warehouse = Warehouse.instance();
-      //context = LibContext.instance();
   }
 
   public static ClerkState instance() {
@@ -36,88 +34,90 @@ public class ClerkState extends WarehouseState {
     }
     return instance;
   }
-//
-//  public String getToken(String prompt) {
-//    do {
-//      try {
-//        System.out.println(prompt);
-//        String line = reader.readLine();
-//        StringTokenizer tokenizer = new StringTokenizer(line,"\n\r\f");
-//        if (tokenizer.hasMoreTokens()) {
-//          return tokenizer.nextToken();
-//        }
-//      } catch (IOException ioe) {
-//        System.exit(0);
-//      }
-//    } while (true);
-//  }
-//  private boolean yesOrNo(String prompt) {
-//    String more = getToken(prompt + " (Y|y)[es] or anything else for no");
-//    if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') {
-//      return false;
-//    }
-//    return true;
-//  }
-//  public int getNumber(String prompt) {
-//    do {
-//      try {
-//        String item = getToken(prompt);
-//        Integer num = Integer.valueOf(item);
-//        return num.intValue();
-//      } catch (NumberFormatException nfe) {
-//        System.out.println("Please input a number ");
-//      }
-//    } while (true);
-//  }
-//  public Calendar getDate(String prompt) {
-//    do {
-//      try {
-//        Calendar date = new GregorianCalendar();
-//        String item = getToken(prompt);
-//        DateFormat df = SimpleDateFormat.getDateInstance(DateFormat.SHORT);
-//        date.setTime(df.parse(item));
-//        return date;
-//      } catch (Exception fe) {
-//        System.out.println("Please input a date as mm/dd/yy");
-//      }
-//    } while (true);
-//  }
-//  public int getCommand() {
-//    do {
-//      try {
-//        int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
-//        if (value >= EXIT && value <= HELP) {
-//          return value;
-//        }
-//      } catch (NumberFormatException nfe) {
-//        System.out.println("Enter a number");
-//      }
-//    } while (true);
-//  }
-//
-//  public void help() {
-//    System.out.println("Enter a number between 0 and 12 as explained below:");
-//    System.out.println(EXIT + " to Exit\n");
-//    System.out.println(ADD_MEMBER + " to add a member");
-//    System.out.println(ADD_BOOKS + " to  add books");
-//    System.out.println(RETURN_BOOKS + " to  return books ");
-//    System.out.println(REMOVE_BOOKS + " to  remove books");
-//    System.out.println(PROCESS_HOLD + " to  process holds");
-//    System.out.println(USERMENU + " to  switch to the user menu");
-//    System.out.println(HELP + " for help");
-//  }
-//
-//  public void addMember() {
-//    String name = getToken("Enter member name");
-//    String address = getToken("Enter address");
-//    String phone = getToken("Enter phone");
-//    Member result;
-//    result = library.addMember(name, address, phone);
-//    if (result == null) {
-//      System.out.println("Could not add member");
-//    }
-//    System.out.println(result);
-//  }
+
+  public String getToken(String prompt) {
+    do {
+      try {
+        System.out.println(prompt);
+        String line = reader.readLine();
+        StringTokenizer tokenizer = new StringTokenizer(line,"\n\r\f");
+        if (tokenizer.hasMoreTokens()) {
+          return tokenizer.nextToken();
+        }
+      } catch (IOException ioe) {
+        System.exit(0);
+      }
+    } while (true);
+  }
+  private boolean yesOrNo(String prompt) {
+    String more = getToken(prompt + " (Y|y)[es] or anything else for no");
+    if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') {
+      return false;
+    }
+    return true;
+  }
+  public int getNumber(String prompt) {
+    do {
+      try {
+        String item = getToken(prompt);
+        Integer num = Integer.valueOf(item);
+        return num.intValue();
+      } catch (NumberFormatException nfe) {
+        System.out.println("Please input a number ");
+      }
+    } while (true);
+  }
+  public int getCommand() {
+    do {
+      try {
+        int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
+    if (value >= EXIT && value <= HELP) {
+      return value;
+    }
+  } catch (NumberFormatException nfe) {
+    System.out.println("Enter a number");
+      }
+    } while (true);
+  }
+
+  public void help() {
+    System.out.println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
+	System.out.println(EXIT + " to exit the program\n");
+	System.out.println(ADD_CLIENT + " to add a client");
+	System.out.println(SHOW_PRODUCTS + " to  show products");
+	System.out.println(SHOW_CLIENTS + " to  show clients ");
+	System.out.println(SHOW_CLIENTS_WITH_BALANCE + " to show clients with a balance");
+	System.out.println(BECOME_CLIENT + " to  become a client");
+	System.out.println(DISPLAY_WAITLIST + " to display the waitlist");
+	System.out.println(RECEIVE_SHIPMENT + " to receive a shipment");
+	System.out.println(LOGOUT + " to logout");
+	System.out.println(HELP + " for help");
+  }
+  
+  //Copied from Library example - need to update with our methods
+//  -Add client - move existing method out of UI class
+//	-Show Products - move existing method out of UI class. Show products with quantities and sale prices. The state invokes a method on Facade to get an iterator, and then extracts the needed information.
+//	-Show list of clients - move existing method of UI class
+//	-Show list of clients with outstanding balance - move existing method of UI class
+//	-Become a client - (use example from ClerkState.java in LibraryFSM code). The actor will be asked to input a ClientID; if valid, this ID will be stored in Context, and the system transitions to the  ClientMenuState.
+//	-Display the waitlist - move existing method of UI class 
+//	-Receive a shipment - move existing method of UI class processShipment()
+//	-Logout- (use example from UserState.java logout method in LibraryFSM). System transitions to the previous  state, which has to be remembered in the context. (If previous state was the OpeningState, it goes there; otherwise it goes to ManagerMenuState.)
+
+
+  public void addClient() {
+    String name = getToken("Enter client name");
+    String address = getToken("Enter address");
+    String phone = getToken("Enter phone");
+    Client result;
+    result = warehouse.addClient(name, address, phone);
+    if (result == null) {
+      System.out.println("Could not add client");
+    }
+    System.out.println(result);
+  }
+  
+  
 //
 //  public void addBooks() {
 //    Book result;

@@ -1,23 +1,26 @@
+//Class by Jessica Adamec
+//Created 3/20/2021 for CSCI 430
+
 import java.util.*;
 import java.text.*;
 import java.io.*;
-public class Loginstate extends WarehouseState{
+public class LoginState extends WarehouseState{
   private static final int CLIENT_LOGIN = 0;
   private static final int CLERK_LOGIN = 1;
   private static final int MANAGER_LOGIN = 2;
   private static final int EXIT = 3;
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));  
   private Warehouse context;
-  private static Loginstate instance;
+  private static LoginState instance;
   
-  private Loginstate() {
+  private LoginState() {
       super();
-     // context = LibContext.instance(); //not sure why this is here, maybe we can delete
+     // context = LibContext.instance(); //maybe we can delete this commented part
   }
 
-  public static Loginstate instance() {
+  public static LoginState instance() {
     if (instance == null) {
-      instance = new Loginstate();
+      instance = new LoginState();
     }
     return instance;
   }
