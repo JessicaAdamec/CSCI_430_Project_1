@@ -92,14 +92,6 @@ public class ClerkState extends WarehouseState {
 		System.out.println(HELP + " for help");
 	}
   
-//  -*Add client - move existing method out of UI class
-//	-*Show Products - move existing method out of UI class. Show products with quantities and sale prices. The state invokes a method on Facade to get an iterator, and then extracts the needed information.
-//	-*Show list of clients - move existing method of UI class
-//	-*Show list of clients with outstanding balance - move existing method of UI class
-//	-*Become a client - (use example from ClerkState.java in LibraryFSM code). The actor will be asked to input a ClientID; if valid, this ID will be stored in Context, and the system transitions to the  ClientMenuState.
-//	-*Display the waitlist - move existing method of UI class 
-//	-*Receive a shipment - move existing method of UI class processShipment()
-//	-*Logout- (use example from UserState.java logout method in LibraryFSM). System transitions to the previous  state, which has to be remembered in the context. (If previous state was the OpeningState, it goes there; otherwise it goes to ManagerMenuState.)
 	public void addClient() {
 	    String name = getToken("Enter client name");
 	    String address = getToken("Enter address");
@@ -195,25 +187,29 @@ public class ClerkState extends WarehouseState {
 	    help();
 	    while ((command = getCommand()) != EXIT) {
 	      switch (command) {
-//	        case ADD_MEMBER:        addMember();
-//	                                break;
-//	        case ADD_BOOKS:         addBooks();
-//	                                break;
-//	        case RETURN_BOOKS:      returnBooks();
-//	                                break;
-//	        case REMOVE_BOOKS:      removeBooks();
-//	                                break;
-//	        case PROCESS_HOLD:      processHolds();
-//	                                break;
-//	        case USERMENU:          usermenu();
-//	                                break;
+	        case ADD_CLIENT:        addClient();
+	                                break;
+	        case SHOW_PRODUCTS:     showProducts();
+	                                break;
+	        case SHOW_CLIENTS:      showClients();
+	                                break;
+	        case SHOW_CLIENTS_WITH_BALANCE: showClientsWithBalance();
+            						break;
+	        case BECOME_CLIENT:     becomeClient();
+	                                break;
+	        case DISPLAY_WAITLIST:  showProductWaitlist();
+	                                break;
+	        case RECEIVE_SHIPMENT:  processShipment();
+	                                break;
+	        case LOGOUT:          	logout();
+	        						break;	                                
 	        case HELP:              help();
 	                                break;
 	      }
 	    }
 	    logout();
 	}
-  
+	
 	public void run() {
 	    process();
 	}
