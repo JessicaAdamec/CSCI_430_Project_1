@@ -10,33 +10,6 @@ public class WarehouseContext {
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Warehouse warehouse;
   
-  //We can remove this code once we're done copying into the new states
-  private static final int EXIT = 0;
-  private static final int ADD_CLIENT = 1;
-  private static final int ADD_PRODUCT = 2;
-  private static final int ADD_SUPPLIER = 3;
-  private static final int ADD_PRODUCT_SUPPLIER = 4;
-  private static final int EDIT_CLIENT = 5;
-  private static final int EDIT_PRODUCT = 6;
-  private static final int EDIT_SUPPLIER = 7;
-  private static final int SHOW_CLIENTS = 8;
-  private static final int SHOW_CLIENTS_WITH_BALANCE = 9;
-  private static final int SHOW_PRODUCTS = 10;
-  private static final int SHOW_PRODUCT_WAITLIST = 11;
-  private static final int SHOW_PRODUCT_SUPPLIERS = 12;
-  private static final int SHOW_ALL_SUPPLIERS = 13;
-  private static final int ADD_PRODUCT_TO_CART = 14;
-  private static final int EDIT_CART = 15;
-  private static final int SHOW_SHOPPING_CART = 16;
-  private static final int PROCESS_ORDER = 17;
-  private static final int PROCESS_PAYMENT = 18;
-  private static final int PROCESS_SHIPMENT = 19;
-  private static final int SHOW_ORDERS = 20;
-  private static final int SHOW_TRANSACTIONS = 21;
-  private static final int PRINT_INVOICE = 22;
-  private static final int SAVE = 23;
-  private static final int RETRIEVE = 24;
-  private static final int HELP = 25;
   
   //Project 2 Code
   private static WarehouseContext context;
@@ -73,6 +46,9 @@ public class WarehouseContext {
     return true;
   }
   
+
+  
+//Remove most of this code once new states are complete
   public int getNumber(String prompt) {
     do {
       try {
@@ -97,51 +73,7 @@ public class WarehouseContext {
 	    } while (true);
 	  }
   
-  public int getCommand() {
-    do {
-      try {
-        int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
-        if (value >= EXIT && value <= HELP) {
-          return value;
-        }
-      } catch (NumberFormatException nfe) {
-        System.out.println("Enter a number");
-      }
-    } while (true);
-  }
 
-//Update once new states are complete
-  public void help() {
-    System.out.println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
-    System.out.println(EXIT + " to Exit");
-    System.out.println(ADD_CLIENT + " to add a client");
-    System.out.println(ADD_PRODUCT + " to add a product");
-    System.out.println(ADD_SUPPLIER + " to add a supplier");
-    System.out.println(ADD_PRODUCT_SUPPLIER + " to add a supplier for a product");    
-    System.out.println(EDIT_CLIENT + " to edit client information");
-    System.out.println(EDIT_PRODUCT + " to edit product information");
-    System.out.println(EDIT_SUPPLIER + " to edit supplier information");
-    System.out.println(SHOW_CLIENTS + " to print all clients");
-    System.out.println(SHOW_CLIENTS_WITH_BALANCE + " to print clients with a balance");
-    System.out.println(SHOW_PRODUCTS + " to print all products");
-    System.out.println(SHOW_PRODUCT_WAITLIST + " to print waitlisted products");
-    System.out.println(SHOW_PRODUCT_SUPPLIERS + " to print product suppliers");
-    System.out.println(SHOW_ALL_SUPPLIERS + " to print all suppliers");  
-    System.out.println(ADD_PRODUCT_TO_CART + " to add a product to the shopping cart");
-    System.out.println(EDIT_CART + " to edit products in the shopping cart");
-    System.out.println(SHOW_SHOPPING_CART + " to show shopping cart");
-    System.out.println(PROCESS_ORDER + " to checkout shopping cart");
-    System.out.println(PROCESS_PAYMENT + " to process a client payment.");
-    System.out.println(PROCESS_SHIPMENT + " to process a new shipment");
-    System.out.println(SHOW_ORDERS + " to show all warehouse orders");
-    System.out.println(SHOW_TRANSACTIONS + " to print transactions");
-    System.out.println(PRINT_INVOICE + " to print an invoice");
-    System.out.println(SAVE + " to save data");
-    System.out.println(RETRIEVE + " to retrieve data");
-    System.out.println(HELP + " for help");
-  }
-  
-//Remove most of this code once new states are complete
   public void addClient() {
     String name = getToken("Enter client name");
     String address = getToken("Enter address");
@@ -151,8 +83,6 @@ public class WarehouseContext {
     if (result == null) {
       System.out.println("Could not add client");
     }
-	   System.out.println("Press " + SAVE + " to save the data: " 
-			   + result); 
   }   
   public void addProduct() {
 	    String id = getToken("Enter product ID");
@@ -167,9 +97,7 @@ public class WarehouseContext {
 	      System.out.println("Could not add product");
 	    }
 	    String myString = result + " Sale Price: $" + salePrice + " Inventory: "
-	    		+ inventory + " Supplier ID: " + supplierID; 
-		   System.out.println("Press " + SAVE + " to save the data: " 
-				   + myString); 
+	    		+ inventory + " Supplier ID: " + supplierID;  
   } 
   public void addSupplier() {
 	    String name = getToken("Enter supplier name");
@@ -180,8 +108,6 @@ public class WarehouseContext {
 	    if (result == null) {
 	      System.out.println("Could not add supplier");
 	    }
-		   System.out.println("Press " + SAVE + " to save the data: " 
-				   + result); 
   } 
   public void addProductSupplier() {
 	  //Add an existing Supplier for a specific Product - STAGE 3
@@ -228,10 +154,6 @@ public class WarehouseContext {
 		   if (updatedClient == null) {
 			   System.out.println("Could not update the data");
 		   }
-		   else {
-		   System.out.println("Press " + SAVE + " to save the data: " 
-				   + updatedClient); 
-		   }
 	   }
   }  
   public void editProduct() {
@@ -256,8 +178,6 @@ public class WarehouseContext {
 						warehouse.editProductInventory(updatedProduct, inventory);
 	       						break;     						
 		   }
-		   System.out.println("Press " + SAVE + " to save the data: " 
-				   + updatedProduct); 
 	   }
   } 
   public void editSupplier() {
@@ -282,8 +202,6 @@ public class WarehouseContext {
 						warehouse.editSupplierPhone(updatedSupplier, phone);
 	     						break;      						
 		   }
-		   System.out.println("Press " + SAVE + " to save the data: " 
-				   + updatedSupplier); 
 	   }
   }
   public void showClients() {
@@ -521,65 +439,6 @@ public class WarehouseContext {
    System.out.println(" Goodbye \n "); System.exit(0);
   }
   
-//Update once new states are complete
-  public void process() {
-    int command;
-    help();
-    while ((command = getCommand()) != EXIT) {
-      switch (command) {
-        case ADD_CLIENT:        addClient();
-                                break;
-        case ADD_PRODUCT:       addProduct();
-        						break;
-        case ADD_SUPPLIER:      addSupplier();
-        						break;
-        case ADD_PRODUCT_SUPPLIER: addProductSupplier();
-        						break;        						
-        case EDIT_CLIENT:     	editClient();
-								break;	       						
-        case EDIT_PRODUCT:     	editProduct();
-								break;							
-        case EDIT_SUPPLIER:     editSupplier();
-								break;		
-        case SHOW_CLIENTS:		showClients();
-        						break;
-        case SHOW_CLIENTS_WITH_BALANCE: showClientsWithBalance();
-        						break;
-        case SHOW_PRODUCTS:		showProducts();
-        						break;
-        case SHOW_PRODUCT_WAITLIST: showProductWaitlist();
-        						break;
-        case SHOW_PRODUCT_SUPPLIERS: showProductSuppliers();
-        						break;
-        case SHOW_ALL_SUPPLIERS:	showAllSuppliers();
-        						break;
-        case ADD_PRODUCT_TO_CART:	addProductToCart();
-								break;
-        case EDIT_CART:			editCart();
-        						break;
-        case SHOW_SHOPPING_CART: 	showShoppingCart();
-        						break;
-        case PROCESS_ORDER: 	processOrder();
-        						break;
-        case PROCESS_PAYMENT:	processPayment();
-        						break;
-        case PROCESS_SHIPMENT:	processShipment();
-        						break;
-        case SHOW_ORDERS:		showOrders();
-        						break;
-        case SHOW_TRANSACTIONS:  showTransactions();
-                                break;
-        case PRINT_INVOICE:		printInvoice();
-        						break;
-        case SAVE:              save();
-                                break;
-        case RETRIEVE:          retrieve();
-                                break;
-        case HELP:              help();
-                                break;
-      }
-    }
-  }
   public static void main(String[] s) {
     WarehouseContext.instance().process();
   }
@@ -599,44 +458,46 @@ public class WarehouseContext {
   }
 
   public void changeState(int transition) {
-    //System.out.println("current state " + currentState + " \n \n ");
+    System.out.println("current state " + currentState + " \n \n ");
     currentState = nextState[currentState][transition];
     if (currentState == -2) 
       {System.out.println("Error has occurred"); terminate();}
     if (currentState == -1) 
       terminate();
-    //System.out.println("current state " + currentState + " \n \n ");
+    System.out.println("current state " + currentState + " \n \n ");
     states[currentState].run();
   }
   
   private WarehouseContext() { //constructor
-    System.out.println("In WarehouseContext constructor");
     if (yesOrNo("Look for saved data and  use it?")) {
       retrieve();
     } else {
       warehouse = Warehouse.instance();
     }
     // set up the FSM and transition table;
-//    states = new WarehouseState[3];  //magic numbers, not sure why Library example has 3 here, maybe it should be 4
-//    states[0] = ClientState.instance();
-//    states[1] = ClerkState.instance();
-//    states[2]=  ManagerState.instance();
-//    states[3]=  Loginstate.instance();
-//    nextState = new int[3][3];//magic numbers, not sure why Library example has 3 here, maybe it should be 4
-//    //need to verify this matrix, copied from Library example
-//    nextState[0][0] = 3;nextState[0][1] = 1;nextState[0][2] = -2;
-//    nextState[1][0] = 3;nextState[1][1] = 0;nextState[1][2] = -2;
-//    nextState[2][0] = 0;nextState[2][1] = 1;nextState[2][2] = -1;
-//    nextState[3][0] = 0;nextState[3][1] = 1;nextState[3][2] = -1;
-//    currentState = 3;
+    states = new WarehouseState[4];  //magic numbers, not sure why Library example has 3 here, maybe it should be 4
+    states[0] = ClientState.instance();
+    states[1] = ClerkState.instance();
+    states[2]=  ManagerState.instance();
+    states[3]=  LoginState.instance();
+    nextState = new int[4][4];//magic numbers, not sure why Library example has 3 here, maybe it should be 4
+    //need to verify this matrix, copied from Library example
+    nextState[0][0] = 3;nextState[0][1] = 1;nextState[0][2] = -2;
+    nextState[1][0] = 0;nextState[1][1] = 0;nextState[1][2] = -2;
+    nextState[2][0] = 0;nextState[2][1] = 1;nextState[2][2] = -1;
+    nextState[3][0] = 0;nextState[3][1] = 1;nextState[3][2] = -1;
+    currentState = 3;
   }
    
   public static WarehouseContext instance() {
 	if (context == null) {
-	   System.out.println("calling constructor");
 	   context = new WarehouseContext();
 	}
 	return context;
+  }
+  
+  public void process(){
+	states[currentState].run();
   }
   
 }
