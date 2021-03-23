@@ -84,31 +84,7 @@ public class WarehouseContext {
       System.out.println("Could not add client");
     }
   }   
-  public void addProduct() {
-	    String id = getToken("Enter product ID");
-	    String name = getToken("Enter product name");
-	    double salePrice = getDouble("Enter sale price");
-	    int inventory = getNumber("Enter product inventory");
-	    String supplierID = getToken("Enter product supplier ID");
-	    double purchasePrice = getDouble("Enter purchase price");
-	    Product result;
-	    result = warehouse.addProduct(id, name, salePrice, purchasePrice, inventory, supplierID);
-	    if (result == null) {
-	      System.out.println("Could not add product");
-	    }
-	    String myString = result + " Sale Price: $" + salePrice + " Inventory: "
-	    		+ inventory + " Supplier ID: " + supplierID;  
-  } 
-  public void addSupplier() {
-	    String name = getToken("Enter supplier name");
-	    String address = getToken("Enter supplier address");
-	    String phone = getToken("Enter supplier phone number");
-	    Supplier result;
-	    result = warehouse.addSupplier(name, address, phone);
-	    if (result == null) {
-	      System.out.println("Could not add supplier");
-	    }
-  } 
+
   public void addProductSupplier() {
 	  //Add an existing Supplier for a specific Product - STAGE 3
 	   String supplierId = getToken("Enter supplier id");
@@ -235,29 +211,7 @@ public class WarehouseContext {
 	  Product product = warehouse.validateProduct(id); 
 	  System.out.println("Quantity of Waitlist: " + warehouse.getProductWaitlistQty(product));
   }
-  public void showProductSuppliers() {  
-	  String id = getToken("Enter product id");
-	   Product product = warehouse.validateProduct(id); 
-	   if (product == null) {
-		   System.out.println("Invalid ID");
-	   }
-	   else {
-		  Iterator productSuppliers = warehouse.getSupplierList(product);
-	      System.out.println("List of Suppliers: ");
-	      while (productSuppliers.hasNext()){
-		  ProductSupplier pSupplier = (ProductSupplier)productSuppliers.next();
-	          System.out.println(pSupplier.toString());
-	      }
-	   }
-   }
-  public void showAllSuppliers() {
-      Iterator allSuppliers = warehouse.getSuppliers();
-      System.out.println("List of Suppliers: ");
-      while (allSuppliers.hasNext()){
-	  Supplier supplier = (Supplier)(allSuppliers.next());
-          System.out.println(supplier.toString());
-      }
-  }
+  
   public void addProductToCart() {
 	   String id = getToken("Enter client id");
 	   Client client = warehouse.validateClient(id); 
