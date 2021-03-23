@@ -15,6 +15,12 @@ import java.util.List;
 		productSuppliers.add(productSupplier);
 		return true;
 	}
+	
+	public boolean removeProductSupplier(ProductSupplier productSupplier) {
+		productSuppliers.remove(productSupplier);
+		return true;
+	}
+	
 	public Iterator getProductSuppliers() {
 		return productSuppliers.iterator();
 	}

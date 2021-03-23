@@ -59,6 +59,11 @@ public class Warehouse implements Serializable {
 	  //Add an existing Supplier for a specific Product - STAGE 3
 	  productId.addProductSupplier(supplierId, price);
   }
+  
+  public void removeProductSupplier(String supplierId, Product product) {
+	  product.removeProductSupplier(supplierId);
+  }
+  
   public Iterator getClients() {
       return clientList.getClients();
   }
@@ -169,6 +174,11 @@ public class Warehouse implements Serializable {
   public void editProductInventory(Product product, int inventory) {
 	  product.setInventory(inventory);
   }
+  
+  public void editProductSupplierPrice(ProductSupplier productSupplier, double price) {
+	  productSupplier.setPrice(price);
+  }
+  
   public void editSupplierName(Supplier supplier, String name) {
 	  supplier.setName(name);
   }

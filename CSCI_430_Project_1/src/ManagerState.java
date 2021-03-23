@@ -99,6 +99,21 @@ public class ManagerState extends WarehouseState {
 	    		+ inventory + " Supplier ID: " + supplierID;  
   } 
   
+  public void addProduct(String supplierId) {
+	  	String id = getToken("Enter product ID");
+	    String name = getToken("Enter product name");
+	    double salePrice = getDouble("Enter sale price");
+	    int inventory = getNumber("Enter product inventory");
+	    double purchasePrice = getDouble("Enter purchase price");
+	    Product result;
+	    result = warehouse.addProduct(id, name, salePrice, purchasePrice, inventory, supplierId);
+	    if (result == null) {
+	      System.out.println("Could not add product");
+	    }
+	    String myString = result + " Sale Price: $" + salePrice + " Inventory: "
+	    		+ inventory + " Supplier ID: " + supplierId;  
+  }
+  
   public void addSupplier() {
 	    String name = getToken("Enter supplier name");
 	    String address = getToken("Enter supplier address");
@@ -142,23 +157,109 @@ public class ManagerState extends WarehouseState {
 	  if (supplier == null) {
 		  System.out.println("Invalid ID");
 	  } else {
-		  Iterator allProducts = warehouse.getProducts();
-	      System.out.println("List of Products: ");
-	      while (allProducts.hasNext()){
-	    	  Product product = (Product)(allProducts.next());
-	    	  ProductSupplier productSupplier = product.getProductSupplier(id);
-	    	  
-	    	  if (productSupplier != null) {
-	    		  System.out.println(product.toString());
-	    		  System.out.println(productSupplier.toString());
-	    	  }
-	      }
+		  printSupplierProductList(id);
 	  }
   }
   
+  //UPDATE SUPPLIER PRODUCTS START
   public void updateSupplierProducts() {
-	  //TODO
+	  String supplierId = getToken("Enter supplier id");
+	  Supplier supplier = warehouse.validateSupplier(supplierId);
+	  
+	  if (supplier == null) {
+		  System.out.println("Invalid ID");
+	  } else {
+		  printSupplierProductList(supplierId);
+		  printSupplierProductsMenu(supplierId);
+	  }
   }
+  
+  public void printSupplierProductsMenu(String supplierId) {
+	  System.out.println(EXIT + " to exit this menu");
+	  System.out.println(1 + " to add a product to this supplier");
+	  System.out.println(2 + " to remove a product from this supplier");
+	  System.out.println(3 + " to edit the purchase price of a product from this supplier.");
+	  System.out.println(HELP + " to display this menu and products list again.");
+  }
+  
+  public void processSupplierProductsMenu(String supplierId)
+  {
+	  int command;
+	  while ((command = getCommand()) != EXIT) {
+		  switch (command) {
+		  	case 1:
+		  			addProductSupplier(supplierId);
+		  	case HELP: 
+		  			printSupplierProductList(supplierId);
+		  			printSupplierProductsMenu(supplierId);
+		  			break;
+		  }
+	  }
+  }
+  
+  public void addProductSupplier(String supplierId) {
+	  //Add an existing Supplier for a specific Product - STAGE 3
+	   Supplier supplier = warehouse.validateSupplier(supplierId); 
+	   if (supplier == null) {
+		   System.out.println("Could not validate the id");
+	   }
+	   else {
+		   String productId = getToken("Enter product id");
+		   Product updatedProduct = warehouse.validateProduct(productId); 
+		   if (updatedProduct == null) {
+			   addProduct(supplierId);
+		   }
+		   else {
+			   double price = getDouble("Enter purchase price");
+			   int inventory = getNumber("Enter inventory");
+			   warehouse.addProductSupplier(supplierId, updatedProduct, price, inventory);   
+		   }
+	   }
+  } 
+  
+  public void removeProductSuppler(String supplierId) {
+	  String productId = getToken("Enter product id");
+	  Product updatedProduct = warehouse.validateProduct(productId); 
+	   if (updatedProduct == null) {
+		   System.out.println("Invalid ID");
+	   } else {
+		   warehouse.removeProductSupplier(supplierId, updatedProduct);
+	   }
+  }
+  
+  public void editPurchasePrice(String supplierId) {
+	  String productId = getToken("Enter product id");
+	  Product updatedProduct = warehouse.validateProduct(productId); 
+	   if (updatedProduct == null) {
+		   System.out.println("Invalid ID");
+	   } else {
+		   ProductSupplier productSupplier = updatedProduct.getProductSupplier(supplierId);
+		   if (productSupplier == null) {
+			   System.out.println("Invalid ID");
+		   } else {
+			   double price = getDouble("Enter purchase price");
+			   warehouse.editProductSupplierPrice(productSupplier, price);
+		   }
+	   }
+  }
+  
+  //END OF UPDATE SUPPLIER PRODUCTS
+  
+  //SHARED METHODS
+  public void printSupplierProductList(String id) {
+	  Iterator allProducts = warehouse.getProducts();
+      System.out.println("List of Products: ");
+      while (allProducts.hasNext()){
+    	  Product product = (Product)(allProducts.next());
+    	  ProductSupplier productSupplier = product.getProductSupplier(id);
+    	  
+    	  if (productSupplier != null) {
+    		  System.out.println(product.toString());
+    		  System.out.println(productSupplier.toString());
+    	  }
+      }
+  }
+  //END SHARED
   
   public void loginAsSalesClerk() {
 	  (WarehouseContext.instance()).changeState(1);
@@ -223,209 +324,8 @@ public class ManagerState extends WarehouseState {
   }
   //end move to own class (Tokens)
   
-//  private boolean yesOrNo(String prompt) {
-//    String more = getToken(prompt + " (Y|y)[es] or anything else for no");
-//    if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') {
-//      return false;
-//    }
-//    return true;
-//  }
-  
-//  public int getNumber(String prompt) {
-//    do {
-//      try {
-//        String item = getToken(prompt);
-//        Integer num = Integer.valueOf(item);
-//        return num.intValue();
-//      } catch (NumberFormatException nfe) {
-//        System.out.println("Please input a number ");
-//      }
-//    } while (true);
-//  }
-  
-//  public Calendar getDate(String prompt) {
-//    do {
-//      try {
-//        Calendar date = new GregorianCalendar();
-//        String item = getToken(prompt);
-//        DateFormat df = SimpleDateFormat.getDateInstance(DateFormat.SHORT);
-//        date.setTime(df.parse(item));
-//        return date;
-//      } catch (Exception fe) {
-//        System.out.println("Please input a date as mm/dd/yy");
-//      }
-//    } while (true);
-//  }
-  
-//  public int getCommand() {
-//    do {
-//      try {
-//        int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
-//        if (value >= EXIT && value <= HELP) {
-//          return value;
-//        }
-//      } catch (NumberFormatException nfe) {
-//        System.out.println("Enter a number");
-//      }
-//    } while (true);
-//  }
-//
-//  public void help() {
-//    System.out.println("Enter a number between 0 and 12 as explained below:");
-//    System.out.println(EXIT + " to Exit\n");
-//    System.out.println(ADD_MEMBER + " to add a member");
-//    System.out.println(ADD_BOOKS + " to  add books");
-//    System.out.println(RETURN_BOOKS + " to  return books ");
-//    System.out.println(REMOVE_BOOKS + " to  remove books");
-//    System.out.println(PROCESS_HOLD + " to  process holds");
-//    System.out.println(USERMENU + " to  switch to the user menu");
-//    System.out.println(HELP + " for help");
-//  }
-//
-//  public void addMember() {
-//    String name = getToken("Enter member name");
-//    String address = getToken("Enter address");
-//    String phone = getToken("Enter phone");
-//    Member result;
-//    result = library.addMember(name, address, phone);
-//    if (result == null) {
-//      System.out.println("Could not add member");
-//    }
-//    System.out.println(result);
-//  }
-//
-//  public void addBooks() {
-//    Book result;
-//    do {
-//      String title = getToken("Enter  title");
-//      String bookID = getToken("Enter id");
-//      String author = getToken("Enter author");
-//      result = library.addBook(title, author, bookID);
-//      if (result != null) {
-//        System.out.println(result);
-//      } else {
-//        System.out.println("Book could not be added");
-//      }
-//      if (!yesOrNo("Add more books?")) {
-//        break;
-//      }
-//    } while (true);
-//  }
-// 
-//  public void returnBooks() {
-//    int result;
-//    do {
-//      String bookID = getToken("Enter book id");
-//      result = library.returnBook(bookID);
-//      switch(result) {
-//        case Library.BOOK_NOT_FOUND:
-//          System.out.println("No such Book in Library");
-//          break;
-//        case Library.BOOK_NOT_ISSUED:
-//          System.out.println(" Book  was not checked out");
-//          break;
-//        case Library.BOOK_HAS_HOLD:
-//          System.out.println("Book has a hold");
-//          break;
-//        case Library.OPERATION_FAILED:
-//          System.out.println("Book could not be returned");
-//          break;
-//        case Library.OPERATION_COMPLETED:
-//          System.out.println(" Book has been returned");
-//          break;
-//        default:
-//          System.out.println("An error has occurred");
-//      }
-//      if (!yesOrNo("Return more books?")) {
-//        break;
-//      }
-//    } while (true);
-//  }
-//  public void removeBooks() {
-//    int result;
-//    do {
-//      String bookID = getToken("Enter book id");
-//      result = library.removeBook(bookID);
-//      switch(result){
-//        case Library.BOOK_NOT_FOUND:
-//          System.out.println("No such Book in Library");
-//          break;
-//        case Library.BOOK_ISSUED:
-//          System.out.println(" Book is currently checked out");
-//          break;
-//        case Library.BOOK_HAS_HOLD:
-//          System.out.println("Book has a hold");
-//          break;
-//        case Library.OPERATION_FAILED:
-//          System.out.println("Book could not be removed");
-//          break;
-//        case Library.OPERATION_COMPLETED:
-//          System.out.println(" Book has been removed");
-//          break;
-//        default:
-//          System.out.println("An error has occurred");
-//      }
-//      if (!yesOrNo("Remove more books?")) {
-//        break;
-//      }
-//    } while (true);
-//  }
-//
-//  public void processHolds() {
-//    Member result;
-//    do {
-//      String bookID = getToken("Enter book id");
-//      result = library.processHold(bookID);
-//      if (result != null) {
-//        System.out.println(result);
-//      } else {
-//        System.out.println("No valid holds left");
-//      }
-//      if (!yesOrNo("Process more books?")) {
-//        break;
-//      }
-//    } while (true);
-//  }
-//
-//  public void usermenu()
-//  {
-//    String userID = getToken("Please input the user id: ");
-//    if (Library.instance().searchMembership(userID) != null){
-//      (LibContext.instance()).setUser(userID);      
-//      (LibContext.instance()).changeState(1);
-//    }
-//    else 
-//      System.out.println("Invalid user id."); 
-//  }
-//
-// 
-//
-//  public void process() {
-//    int command;
-//    help();
-//    while ((command = getCommand()) != EXIT) {
-//      switch (command) {
-//        case ADD_MEMBER:        addMember();
-//                                break;
-//        case ADD_BOOKS:         addBooks();
-//                                break;
-//        case RETURN_BOOKS:      returnBooks();
-//                                break;
-//        case REMOVE_BOOKS:      removeBooks();
-//                                break;
-//        case PROCESS_HOLD:      processHolds();
-//                                break;
-//        case USERMENU:          usermenu();
-//                                break;
-//        case HELP:              help();
-//                                break;
-//      }
-//    }
-//    logout();
-//  }
-  
   public void run() {
-//    process();
+	  process();
   }
   
 }
