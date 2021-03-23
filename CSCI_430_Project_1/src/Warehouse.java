@@ -133,6 +133,18 @@ public class Warehouse implements Serializable {
 	  }
 	  return null;
   }
+  public String getClientName(Client client) {
+	  return client.getName();
+  }
+  public String getClientPhone(Client client) {
+	  return client.getPhone();
+  }
+  public String getClientAddress(Client client) {
+	  return client.getAddress();
+  }
+  public Double getClientBalance(Client client) {
+	  return client.getBalance();
+  }
   public void editClientName(Client client, String name) {
 	  client.setName(name);
   }
@@ -142,6 +154,12 @@ public class Warehouse implements Serializable {
   public void editClientPhone(Client client, String phone) {
 	  client.setPhone(phone);
   }  
+  public String getProductName(Product product) {
+	  return product.getName();
+  }
+  public Double getProductSalePrice(Product product) {
+	  return product.getSalePrice();
+  }
   public void editProductName(Product product, String name) {
 	  product.setName(name);
   }
@@ -197,7 +215,7 @@ public class Warehouse implements Serializable {
 			  int inventoryShortage = product.removeInventory(itemQty);
 		    	  if (inventoryShortage > 0) {
 		   	    	   //add negative qty to waitlist  		    		  
-		    		  product.addEntryToWaitlist(orderId, inventoryShortage);
+		    		  product.addEntryToWaitlist(orderId, inventoryShortage, client.getId());
 		            System.out.println("Amount added to waitlist: "+ inventoryShortage);
 	    	  }
 		  }//end while

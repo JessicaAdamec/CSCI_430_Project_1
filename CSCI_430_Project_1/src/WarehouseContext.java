@@ -482,10 +482,10 @@ public class WarehouseContext {
     states[3]=  LoginState.instance();
     nextState = new int[4][4];//magic numbers, not sure why Library example has 3 here, maybe it should be 4
     //need to verify this matrix, copied from Library example
-    nextState[0][0] = 3;nextState[0][1] = 1;nextState[0][2] = -2;
-    nextState[1][0] = 0;nextState[1][1] = 0;nextState[1][2] = -2;
-    nextState[2][0] = 0;nextState[2][1] = 1;nextState[2][2] = -1;
-    nextState[3][0] = 0;nextState[3][1] = 1;nextState[3][2] = -1;
+    nextState[0][0] = 3;nextState[0][1] = 1;nextState[0][2] = -2;nextState[0][3] = -2;
+    nextState[1][0] = 0;nextState[1][1] = 0;nextState[1][2] = 2;nextState[1][3] = -2;
+    nextState[2][0] = 0;nextState[2][1] = 1;nextState[2][2] = 3;nextState[2][3] = -2;
+    nextState[3][0] = 0;nextState[3][1] = 1;nextState[3][2] = 2;nextState[3][3] = -1;
     currentState = 3;
   }
    

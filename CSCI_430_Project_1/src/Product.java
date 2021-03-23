@@ -49,8 +49,8 @@ public class Product implements Serializable {
 		ProductSupplier productSupplier = new ProductSupplier(supplierId, price);
 		productSupplierList.insertProductSupplier(productSupplier);
 	}
-	public void addEntryToWaitlist(String orderId, int qty) {
-		WaitListEntry entry = new WaitListEntry(orderId, qty);
+	public void addEntryToWaitlist(String orderId, int qty, String clientId) {
+		WaitListEntry entry = new WaitListEntry(orderId, qty, clientId);
 		waitList.insertWaitListEntry(entry);
 	}
 	public ProductSupplierList getSupplierList() {
