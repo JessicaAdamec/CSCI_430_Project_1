@@ -140,6 +140,9 @@ public class ClientState extends WarehouseState {
           Product product = (Product)(allProducts.next());
           if(warehouse.getProductWaitlistQty(product) > 0){
             Iterator productWaitlist = product.getWaitList();
+            if (!productWaitlist.hasNext()){
+              System.out.println("Wait List empty!");
+            }
             while (productWaitlist.hasNext()){
               WaitListEntry waitListEntry = (WaitListEntry)(productWaitlist.next());
               if (waitListEntry.getClientid() == id){
