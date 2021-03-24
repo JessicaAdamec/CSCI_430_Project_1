@@ -20,13 +20,15 @@ public class ClientState extends WarehouseState {
 
 
   //Copied from Library example, need to update for our project
-//  private static final int EXIT = 0;
-//  private static final int ISSUE_BOOKS = 3;
-//  private static final int RENEW_BOOKS = 5;
-//  private static final int PLACE_HOLD = 7;
-//  private static final int REMOVE_HOLD = 8;
-//  private static final int GET_TRANSACTIONS = 10;
-//  private static final int HELP = 13;
+ private static final int EXIT = 0;
+ private static final int CLIENT_DETALS = 1;
+ private static final int LIST_PRODUCTS = 2;
+ private static final int CLIENT_TRANSACTIONS = 3;
+ private static final int EDIT_CART = 4;
+ private static final int WAIT_LIST = 5;
+ private static final int HELP = 6;
+ private static final int LOGOUT = 7;
+
   
   private ClientState() {
     super();
@@ -40,75 +42,7 @@ public class ClientState extends WarehouseState {
       return clientState;
     }
   }
-  
-//  public String getToken(String prompt) {
-//    do {
-//      try {
-//        System.out.println(prompt);
-//        String line = reader.readLine();
-//        StringTokenizer tokenizer = new StringTokenizer(line,"\n\r\f");
-//        if (tokenizer.hasMoreTokens()) {
-//          return tokenizer.nextToken();
-//        }
-//      } catch (IOException ioe) {
-//        System.exit(0);
-//      }
-//    } while (true);
-//  }
-//  private boolean yesOrNo(String prompt) {
-//    String more = getToken(prompt + " (Y|y)[es] or anything else for no");
-//    if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') {
-//      return false;
-//    }
-//    return true;
-//  }
-//  public int getNumber(String prompt) {
-//    do {
-//      try {
-//        String item = getToken(prompt);
-//        Integer num = Integer.valueOf(item);
-//        return num.intValue();
-//      } catch (NumberFormatException nfe) {
-//        System.out.println("Please input a number ");
-//      }
-//    } while (true);
-//  }
-//  public Calendar getDate(String prompt) {
-//    do {
-//      try {
-//        Calendar date = new GregorianCalendar();
-//        String item = getToken(prompt);
-//        DateFormat df = SimpleDateFormat.getDateInstance(DateFormat.SHORT);
-//        date.setTime(df.parse(item));
-//        return date;
-//      } catch (Exception fe) {
-//        System.out.println("Please input a date as mm/dd/yy");
-//      }
-//    } while (true);
-//  }
-//  public int getCommand() {
-//    do {
-//      try {
-//        int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
-//        if (value >= EXIT && value <= HELP) {
-//          return value;
-//        }
-//      } catch (NumberFormatException nfe) {
-//        System.out.println("Enter a number");
-//      }
-//    } while (true);
-//  }
-//
-//  public void help() {
-//    System.out.println("Enter a number between 0 and 12 as explained below:");
-//    System.out.println(EXIT + " to Exit\n");
-//    System.out.println(ISSUE_BOOKS + " to  issue books to a  member");
-//    System.out.println(RENEW_BOOKS + " to  renew books ");
-//    System.out.println(PLACE_HOLD + " to  place a hold on a book");
-//    System.out.println(REMOVE_HOLD + " to  remove a hold on a book");
-//    System.out.println(GET_TRANSACTIONS + " to  print transactions");
-//    System.out.println(HELP + " for help");
-//  }
+
     public void showTransactions() {
       String id = getToken("Enter client id");
       Client client = warehouse.validateClient(id);  
@@ -198,82 +132,116 @@ public class ClientState extends WarehouseState {
       }
     }
   }
-
-    public int getProductWaitlistQty(Product product) {
-      int qty = 0;	  
-      Iterator productWaitlist = product.getWaitList();
-      while (productWaitlist.hasNext()){
-        WaitListEntry waitListEntry = (WaitListEntry)(productWaitlist.next());
-        qty += waitListEntry.getQuantity();
-      }	  
-      return qty;
-    }
     
     public void logout() {//
-      if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsManager) { //stem.out.println(" going to manager \n ");
-         WarehouseContext.instance().changeState(2); // check this number
+      if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk) { //stem.out.println(" going to manager \n ");
+         WarehouseContext.instance().changeState(1); // clerk
       }
       else //go to LoginState
-         (WarehouseContext.instance()).changeState(3); // check this number
+         (WarehouseContext.instance()).changeState(3); // login
     }
-//
-//  public void issueBooks() {
-//    Book result;
-//    String memberID = LibContext.instance().getUser();
-//    do {
-//      String bookID = getToken("Enter book id");
-//      result = library.issueBook(memberID, bookID);
-//      if (result != null){
-//        System.out.println(result.getTitle()+ "   " +  result.getDueDate());
-//      } else {
-//          System.out.println("Book could not be issued");
-//      }
-//      if (!yesOrNo("Issue more books?")) {
-//        break;
-//      }
-//    } while (true);
-//  }
-//
-//  public void renewBooks() {
-//    Book result;
-//    String memberID = LibContext.instance().getUser();
-//    Iterator issuedBooks = library.getBooks(memberID);
-//    while (issuedBooks.hasNext()){
-//      Book book = (Book)(issuedBooks.next());
-//      if (yesOrNo(book.getTitle())) {
-//        result = library.renewBook(book.getId(), memberID);
-//        if (result != null){
-//          System.out.println(result.getTitle()+ "   " + result.getDueDate());
-//        } else {
-//          System.out.println("Book is not renewable");
-//        }
-//      }
-//    }
-//  }
-//
-//
-//  public void placeHold() {
-//    String memberID = LibContext.instance().getUser();
-//    String bookID = getToken("Enter book id");
-//    int duration = getNumber("Enter duration of hold");
-//    int result = library.placeHold(memberID, bookID, duration);
-//    switch(result){
-//      case Library.BOOK_NOT_FOUND:
-//        System.out.println("No such Book in Library");
-//        break;
-//      case Library.BOOK_NOT_ISSUED:
-//        System.out.println(" Book is not checked out");
-//        break;
-//      case Library.NO_SUCH_MEMBER:
-//        System.out.println("Not a valid member ID");
-//        break;
-//      case Library.HOLD_PLACED:
-//        System.out.println("A hold has been placed");
-//        break;
-//      default:
-//        System.out.println("An error has occurred");
-//    }
-//  }
+
+    public void help() {
+      System.out.println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
+      System.out.println(EXIT + " to exit the program\n");
+      System.out.println(CLIENT_DETALS + " to see a client's details ");
+      System.out.println(LIST_PRODUCTS + " to show products");
+      System.out.println(CLIENT_TRANSACTIONS + " to show client transactions ");
+      System.out.println(EDIT_CART + " to edit shopping cart");
+      System.out.println(WAIT_LIST + " to see a client's waitlist");
+      System.out.println(HELP + " for help");
+      System.out.println(LOGOUT + " to logout");
+    }
+
+     public int getCommand() {
+      do {
+        try {
+          int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
+          if (value >= EXIT && value <= HELP) {
+            return value;
+          }
+        } catch (NumberFormatException nfe) {
+          System.out.println("Enter a number");
+        }
+      } while (true);
+      }
+    private boolean yesOrNo(String prompt) {
+      String more = getToken(prompt + " (Y|y)[es] or anything else for no");
+      if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') {
+        return false;
+      }
+      return true;
+    }
+
+    public Calendar getDate(String prompt) {
+      do {
+        try {
+          Calendar date = new GregorianCalendar();
+          String item = getToken(prompt);
+          DateFormat df = SimpleDateFormat.getDateInstance(DateFormat.SHORT);
+          date.setTime(df.parse(item));
+          return date;
+        } catch (Exception fe) {
+          System.out.println("Please input a date as mm/dd/yy");
+        }
+      } while (true);
+    }
+   
+    public void process() {
+      int command;
+        help();
+        while ((command = getCommand()) != EXIT) {
+          switch (command) {
+            case CLIENT_DETALS:        showClientDetails();
+                                    break;
+            case LIST_PRODUCTS:     showProducts();
+                                    break;
+            case CLIENT_TRANSACTIONS: showTransactions();
+                                    break;
+            case EDIT_CART: editCart();
+                          break;
+            case WAIT_LIST:  showClientWaitlist();
+                                    break;
+            case LOGOUT:          	logout();
+                        break;	                                
+            case HELP:              help();
+                                    break;
+          }
+        }
+        logout();
+    }
+
+    public String getToken(String prompt) {
+      do {
+        try {
+          System.out.println(prompt);
+          String line = reader.readLine();
+          StringTokenizer tokenizer = new StringTokenizer(line,"\n\r\f");
+          if (tokenizer.hasMoreTokens()) {
+            return tokenizer.nextToken();
+          }
+        } catch (IOException ioe) {
+          System.exit(0);
+        }
+      } while (true);
+    }
+    
+    public int getNumber(String prompt) {
+      do {
+        try {
+          String item = getToken(prompt);
+          Integer num = Integer.valueOf(item);
+          return num.intValue();
+        } catch (NumberFormatException nfe) {
+          System.out.println("Please input a number ");
+        }
+      } while (true);
+    }
+    
+    public void run() {
+      process();
+    }
+  }
 //
 //  public void removeHold() {
 //    String memberID = LibContext.instance().getUser();
@@ -334,10 +302,6 @@ public class ClientState extends WarehouseState {
 //  }
 //
   
-  public void run() {
-    //process();
-  }
-  
 //
 //  public void logout()
 //  {
@@ -353,32 +317,3 @@ public class ClientState extends WarehouseState {
 //       (LibContext.instance()).changeState(2); // exit code 2, indicates error
 //  }
 // 
-
-
-public String getToken(String prompt) {
-  do {
-    try {
-      System.out.println(prompt);
-      String line = reader.readLine();
-      StringTokenizer tokenizer = new StringTokenizer(line,"\n\r\f");
-      if (tokenizer.hasMoreTokens()) {
-        return tokenizer.nextToken();
-      }
-    } catch (IOException ioe) {
-      System.exit(0);
-    }
-  } while (true);
-}
-
-public int getNumber(String prompt) {
-  do {
-    try {
-      String item = getToken(prompt);
-      Integer num = Integer.valueOf(item);
-      return num.intValue();
-    } catch (NumberFormatException nfe) {
-      System.out.println("Please input a number ");
-    }
-  } while (true);
-}
-}
