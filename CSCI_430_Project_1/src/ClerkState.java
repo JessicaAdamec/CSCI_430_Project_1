@@ -80,12 +80,12 @@ public class ClerkState extends WarehouseState {
 
 	public void help() {
 		System.out.println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
-		System.out.println(EXIT + " to exit the program\n");
+		System.out.println(EXIT + " to exit the program");
 		System.out.println(ADD_CLIENT + " to add a client");
-		System.out.println(SHOW_PRODUCTS + " to  show products");
-		System.out.println(SHOW_CLIENTS + " to  show clients ");
+		System.out.println(SHOW_PRODUCTS + " to show products");
+		System.out.println(SHOW_CLIENTS + " to show clients ");
 		System.out.println(SHOW_CLIENTS_WITH_BALANCE + " to show clients with a balance");
-		System.out.println(BECOME_CLIENT + " to  become a client");
+		System.out.println(BECOME_CLIENT + " to become a client");
 		System.out.println(DISPLAY_WAITLIST + " to display the waitlist");
 		System.out.println(RECEIVE_SHIPMENT + " to receive a shipment");
 		System.out.println(LOGOUT + " to logout");

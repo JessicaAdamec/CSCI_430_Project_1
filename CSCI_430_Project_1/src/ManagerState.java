@@ -267,7 +267,7 @@ public class ManagerState extends WarehouseState {
   
   public void logout()
   {
-    (WarehouseContext.instance()).changeState(0); // exit with a code 0
+    (WarehouseContext.instance()).changeState(3); 
   }
 
   //these should all move to their own class (Tokens)

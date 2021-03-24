@@ -15,7 +15,6 @@ public class LoginState extends WarehouseState{
   
   private LoginState() {
       super();
-     // context = LibContext.instance(); //maybe we can delete this commented part
   }
 
   public static LoginState instance() {

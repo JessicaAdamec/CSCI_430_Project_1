@@ -302,6 +302,4 @@ public class Warehouse implements Serializable {
     return "Warehouse System\n";
   }
   
-  //Project 2 code
-
 }

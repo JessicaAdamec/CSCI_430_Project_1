@@ -16,18 +16,17 @@ public class ClientState extends WarehouseState {
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Warehouse warehouse;
   private WarehouseContext context;
-	private static ClerkState instance; 
+  private static ClerkState instance; 
 
-
-  //Copied from Library example, need to update for our project
  private static final int EXIT = 0;
  private static final int CLIENT_DETALS = 1;
  private static final int LIST_PRODUCTS = 2;
  private static final int CLIENT_TRANSACTIONS = 3;
- private static final int EDIT_CART = 4;
- private static final int WAIT_LIST = 5;
- private static final int HELP = 6;
- private static final int LOGOUT = 7;
+ private static final int ADD_TO_CART = 4;
+ private static final int EDIT_CART = 5;
+ private static final int WAIT_LIST = 6;
+ private static final int HELP = 7;
+ private static final int LOGOUT = 8;
 
   
   private ClientState() {
@@ -58,7 +57,27 @@ public class ClientState extends WarehouseState {
           }
       }
     }  
-
+    public void addProductToCart() {
+        String id = getToken("Enter client id");
+        Client client = warehouse.validateClient(id); 
+        if (client == null) {
+            System.out.println("Invalid ID");
+        }
+        else {
+            String productId = getToken("Enter product id");
+            Product product = warehouse.validateProduct(productId); 
+            if (product == null) {
+                System.out.println("Invalid ID");
+            }
+            else {
+               String quantity = getToken("Enter quantity");
+               int qty = Integer.valueOf(quantity);
+               warehouse.addItemToCart(client, product, qty);
+               System.out.println("The value of shopping cart after adding product: " 
+                                               +  warehouse.getShoppingCart(client));
+            }
+        }
+   }
     public void editCart() {
       String id = getToken("Enter client id");
       Client client = warehouse.validateClient(id); 
@@ -108,7 +127,7 @@ public class ClientState extends WarehouseState {
         System.out.println("Product Sale Price: " + warehouse.getProductSalePrice(product));      
       }
     }
-//fix the method below -- too messy
+
     public void showClientWaitlist(){
       String id = getToken("Enter Client Id");
       Client selectedClient = warehouse.validateClient(id);
@@ -129,16 +148,16 @@ public class ClientState extends WarehouseState {
               }
             }	  
           }
+        }
       }
     }
-  }
     
     public void logout() {//
-      if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk) { //stem.out.println(" going to manager \n ");
-         WarehouseContext.instance().changeState(1); // clerk
+      if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk) {
+         WarehouseContext.instance().changeState(1); // Become a clerk
       }
-      else //go to LoginState
-         (WarehouseContext.instance()).changeState(3); // login
+      else 
+         (WarehouseContext.instance()).changeState(3); //Go to LoginState
     }
 
     public void help() {
@@ -147,6 +166,7 @@ public class ClientState extends WarehouseState {
       System.out.println(CLIENT_DETALS + " to see a client's details ");
       System.out.println(LIST_PRODUCTS + " to show products");
       System.out.println(CLIENT_TRANSACTIONS + " to show client transactions ");
+      System.out.println(ADD_TO_CART + " to add an item to the cart");
       System.out.println(EDIT_CART + " to edit shopping cart");
       System.out.println(WAIT_LIST + " to see a client's waitlist");
       System.out.println(HELP + " for help");
@@ -192,18 +212,20 @@ public class ClientState extends WarehouseState {
         help();
         while ((command = getCommand()) != EXIT) {
           switch (command) {
-            case CLIENT_DETALS:        showClientDetails();
+            case CLIENT_DETALS:     showClientDetails();
                                     break;
             case LIST_PRODUCTS:     showProducts();
                                     break;
             case CLIENT_TRANSACTIONS: showTransactions();
                                     break;
-            case EDIT_CART: editCart();
-                          break;
-            case WAIT_LIST:  showClientWaitlist();
+            case ADD_TO_CART:		addProductToCart();
+            						break;
+            case EDIT_CART: 		editCart();
+                          			break;
+            case WAIT_LIST:  		showClientWaitlist();
                                     break;
             case LOGOUT:          	logout();
-                        break;	                                
+                        			break;	                                
             case HELP:              help();
                                     break;
           }
@@ -242,78 +264,3 @@ public class ClientState extends WarehouseState {
       process();
     }
   }
-//
-//  public void removeHold() {
-//    String memberID = LibContext.instance().getUser();
-//    String bookID = getToken("Enter book id");
-//    int result = library.removeHold(memberID, bookID);
-//    switch(result){
-//      case Library.BOOK_NOT_FOUND:
-//        System.out.println("No such Book in Library");
-//        break;
-//      case Library.NO_SUCH_MEMBER:
-//        System.out.println("Not a valid member ID");
-//        break;
-//      case Library.OPERATION_COMPLETED:
-//        System.out.println("The hold has been removed");
-//        break;
-//      default:
-//        System.out.println("An error has occurred");
-//    }
-//  }
-//
-//  public void getTransactions() {
-//    Iterator result;
-//    String memberID = LibContext.instance().getUser();
-//    Calendar date  = getDate("Please enter the date for which you want records as mm/dd/yy");
-//    result = library.getTransactions(memberID,date);
-//    if (result == null) {
-//      System.out.println("Invalid Member ID");
-//    } else {
-//      while(result.hasNext()) {
-//        Transaction transaction = (Transaction) result.next();
-//        System.out.println(transaction.getType() + "   "   + transaction.getTitle() + "\n");
-//      }
-//      System.out.println("\n  There are no more transactions \n" );
-//    }
-//  }
-//
-//  public void process() {
-//    int command;
-//    help();
-//    while ((command = getCommand()) != EXIT) {
-//      switch (command) {
-//
-//        case ISSUE_BOOKS:       issueBooks();
-//                                break;
-//        case RENEW_BOOKS:       renewBooks();
-//                                break;
-//        case PLACE_HOLD:        placeHold();
-//                                break;
-//        case REMOVE_HOLD:       removeHold();
-//                                break;
-//        case GET_TRANSACTIONS:  getTransactions();
-//                                break;
-//        case HELP:              help();
-//                                break;
-//      }
-//    }
-//    logout();
-//  }
-//
-  
-//
-//  public void logout()
-//  {
-//    if ((LibContext.instance()).getLogin() == LibContext.IsClerk)
-//       { //stem.out.println(" going to clerk \n ");
-//         (LibContext.instance()).changeState(1); // exit with a code 1
-//        }
-//    else if (LibContext.instance().getLogin() == LibContext.IsUser)
-//       {  //stem.out.println(" going to login \n");
-//        (LibContext.instance()).changeState(0); // exit with a code 2
-//       }
-//    else 
-//       (LibContext.instance()).changeState(2); // exit code 2, indicates error
-//  }
-// 
