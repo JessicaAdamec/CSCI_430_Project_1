@@ -27,3 +27,6 @@
 /Warehouse.class
 /WarehouseContext.class
 /WarehouseState.class
+/ShoppingCartState.class
+/QueryClientState.class
+/GetPrompts.class

@@ -19,6 +19,8 @@ public class ManagerState extends WarehouseState {
   private static final int LOGOUT = 8;
   private static final int HELP = 9;
   
+  private GetPrompts getPrompt = new GetPrompts(EXIT, HELP);
+  
   private ManagerState() {
       super();
       warehouse = Warehouse.instance();
@@ -35,7 +37,7 @@ public class ManagerState extends WarehouseState {
   public void process() {
 		int command;
 	    help();
-	    while ((command = getCommand()) != EXIT) {
+	    while ((command = getPrompt.getCommand()) != EXIT) {
 	      switch (command) {
 	      	case ADD_PRODUCT:       
 	      							addProduct();
@@ -70,7 +72,7 @@ public class ManagerState extends WarehouseState {
   }
   
   public void help() {
-	System.out.println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
+	System.out.println("\nEnter a number between " + EXIT + " and " + HELP + " as explained below:\n");
 	System.out.println(EXIT + " to exit the program\n");
 	System.out.println(ADD_PRODUCT + " to add a product");
 	System.out.println(ADD_SUPPLIER + " to add a supplier");
@@ -84,12 +86,12 @@ public class ManagerState extends WarehouseState {
   }
 	  
   public void addProduct() {
-	    String id = getToken("Enter product ID");
-	    String name = getToken("Enter product name");
-	    double salePrice = getDouble("Enter sale price");
-	    int inventory = getNumber("Enter product inventory");
-	    String supplierID = getToken("Enter product supplier ID");
-	    double purchasePrice = getDouble("Enter purchase price");
+	    String id = getPrompt.getToken("Enter product ID");
+	    String name = getPrompt.getToken("Enter product name");
+	    double salePrice = getPrompt.getDouble("Enter sale price");
+	    int inventory = getPrompt.getNumber("Enter product inventory");
+	    String supplierID = getPrompt.getToken("Enter product supplier ID");
+	    double purchasePrice = getPrompt.getDouble("Enter purchase price");
 	    Product result;
 	    result = warehouse.addProduct(id, name, salePrice, purchasePrice, inventory, supplierID);
 	    if (result == null) {
@@ -100,11 +102,11 @@ public class ManagerState extends WarehouseState {
   } 
   
   public void addProduct(String supplierId) {
-	  	String id = getToken("Enter product ID");
-	    String name = getToken("Enter product name");
-	    double salePrice = getDouble("Enter sale price");
-	    int inventory = getNumber("Enter product inventory");
-	    double purchasePrice = getDouble("Enter purchase price");
+	  	String id = getPrompt.getToken("Enter product ID");
+	    String name = getPrompt.getToken("Enter product name");
+	    double salePrice = getPrompt.getDouble("Enter sale price");
+	    int inventory = getPrompt.getNumber("Enter product inventory");
+	    double purchasePrice = getPrompt.getDouble("Enter purchase price");
 	    Product result;
 	    result = warehouse.addProduct(id, name, salePrice, purchasePrice, inventory, supplierId);
 	    if (result == null) {
@@ -115,9 +117,9 @@ public class ManagerState extends WarehouseState {
   }
   
   public void addSupplier() {
-	    String name = getToken("Enter supplier name");
-	    String address = getToken("Enter supplier address");
-	    String phone = getToken("Enter supplier phone number");
+	    String name = getPrompt.getToken("Enter supplier name");
+	    String address = getPrompt.getToken("Enter supplier address");
+	    String phone = getPrompt.getToken("Enter supplier phone number");
 	    Supplier result;
 	    result = warehouse.addSupplier(name, address, phone);
 	    if (result == null) {
@@ -135,7 +137,7 @@ public class ManagerState extends WarehouseState {
   }
   
   public void showProductSuppliers() {  
-	  String id = getToken("Enter product id");
+	  String id = getPrompt.getToken("Enter product id");
 	   Product product = warehouse.validateProduct(id); 
 	   if (product == null) {
 		   System.out.println("Invalid ID");
@@ -151,7 +153,7 @@ public class ManagerState extends WarehouseState {
   }
   
   public void showSupplierProducts() {
-	  String id = getToken("Enter supplier id");
+	  String id = getPrompt.getToken("Enter supplier id");
 	  Supplier supplier = warehouse.validateSupplier(id);
 	  
 	  if (supplier == null) {
@@ -163,7 +165,7 @@ public class ManagerState extends WarehouseState {
   
   //UPDATE SUPPLIER PRODUCTS START
   public void updateSupplierProducts() {
-	  String supplierId = getToken("Enter supplier id");
+	  String supplierId = getPrompt.getToken("Enter supplier id");
 	  Supplier supplier = warehouse.validateSupplier(supplierId);
 	  
 	  if (supplier == null) {
@@ -185,7 +187,7 @@ public class ManagerState extends WarehouseState {
   public void processSupplierProductsMenu(String supplierId)
   {
 	  int command;
-	  while ((command = getCommand()) != EXIT) {
+	  while ((command = getPrompt.getCommand()) != EXIT) {
 		  switch (command) {
 		  	case 1:
 		  			addProductSupplier(supplierId);
@@ -204,21 +206,21 @@ public class ManagerState extends WarehouseState {
 		   System.out.println("Could not validate the id");
 	   }
 	   else {
-		   String productId = getToken("Enter product id");
+		   String productId = getPrompt.getToken("Enter product id");
 		   Product updatedProduct = warehouse.validateProduct(productId); 
 		   if (updatedProduct == null) {
 			   addProduct(supplierId);
 		   }
 		   else {
-			   double price = getDouble("Enter purchase price");
-			   int inventory = getNumber("Enter inventory");
+			   double price = getPrompt.getDouble("Enter purchase price");
+			   int inventory = getPrompt.getNumber("Enter inventory");
 			   warehouse.addProductSupplier(supplierId, updatedProduct, price, inventory);   
 		   }
 	   }
   } 
   
   public void removeProductSuppler(String supplierId) {
-	  String productId = getToken("Enter product id");
+	  String productId = getPrompt.getToken("Enter product id");
 	  Product updatedProduct = warehouse.validateProduct(productId); 
 	   if (updatedProduct == null) {
 		   System.out.println("Invalid ID");
@@ -228,7 +230,7 @@ public class ManagerState extends WarehouseState {
   }
   
   public void editPurchasePrice(String supplierId) {
-	  String productId = getToken("Enter product id");
+	  String productId = getPrompt.getToken("Enter product id");
 	  Product updatedProduct = warehouse.validateProduct(productId); 
 	   if (updatedProduct == null) {
 		   System.out.println("Invalid ID");
@@ -237,7 +239,7 @@ public class ManagerState extends WarehouseState {
 		   if (productSupplier == null) {
 			   System.out.println("Invalid ID");
 		   } else {
-			   double price = getDouble("Enter purchase price");
+			   double price = getPrompt.getDouble("Enter purchase price");
 			   warehouse.editProductSupplierPrice(productSupplier, price);
 		   }
 	   }
@@ -269,60 +271,6 @@ public class ManagerState extends WarehouseState {
   {
     (WarehouseContext.instance()).changeState(3); 
   }
-
-  //these should all move to their own class (Tokens)
-  public String getToken(String prompt) {
-    do {
-      try {
-        System.out.println(prompt);
-        String line = reader.readLine();
-        StringTokenizer tokenizer = new StringTokenizer(line,"\n\r\f");
-        if (tokenizer.hasMoreTokens()) {
-          return tokenizer.nextToken();
-        }
-      } catch (IOException ioe) {
-        System.exit(0);
-      }
-    } while (true);
-  }
-  
-  public double getDouble(String prompt) {
-    do {
-      try {
-        String item = getToken(prompt);
-        Double num = Double.valueOf(item);
-        return num.doubleValue();
-      } catch (NumberFormatException nfe) {
-        System.out.println("Please input a number ");
-      }
-    } while (true);
-  }
-  
-  public int getNumber(String prompt) {
-    do {
-      try {
-        String item = getToken(prompt);
-        Integer num = Integer.valueOf(item);
-        return num.intValue();
-      } catch (NumberFormatException nfe) {
-        System.out.println("Please input a number ");
-      }
-    } while (true);
-  }
-  
-  public int getCommand() {
-	  do {
-	    try {
-	      int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
-		  if (value >= EXIT && value <= HELP) {
-		    return value;
-		  }
-	    } catch (NumberFormatException nfe) {
-	    	System.out.println("Enter a number");
-	    }
-	  } while (true);
-  }
-  //end move to own class (Tokens)
   
   public void run() {
 	  process();

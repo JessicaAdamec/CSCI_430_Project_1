@@ -63,6 +63,9 @@ public class Client implements Serializable {
 	  public void addItemToCart(CartItem cartItem) {
 		  shoppingCart.insertProduct(cartItem);
 	  }
+	  public void removeItemFromCart(CartItem cartItem) {
+		  shoppingCart.removeProduct(cartItem);
+	  }
 	  public void addTransactions(Transaction transaction) {
 		transactionList.insertTransaction(transaction);
 	  }

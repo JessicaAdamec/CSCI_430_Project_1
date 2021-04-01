@@ -13,20 +13,19 @@ import java.util.Iterator;
 public class ClientState extends WarehouseState {
 	
   private static ClientState clientState;
-  private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Warehouse warehouse;
   private WarehouseContext context;
-  private static ClerkState instance; 
 
  private static final int EXIT = 0;
  private static final int CLIENT_DETALS = 1;
  private static final int LIST_PRODUCTS = 2;
  private static final int CLIENT_TRANSACTIONS = 3;
- private static final int ADD_TO_CART = 4;
- private static final int EDIT_CART = 5;
- private static final int WAIT_LIST = 6;
+ private static final int VIEW_CART = 4;
+ private static final int WAIT_LIST = 5;
+ private static final int LOGOUT = 6;
  private static final int HELP = 7;
- private static final int LOGOUT = 8;
+ 
+ private GetPrompts getPrompt = new GetPrompts(EXIT, HELP);
 
   
   private ClientState() {
@@ -43,7 +42,7 @@ public class ClientState extends WarehouseState {
   }
 
     public void showTransactions() {
-      String id = getToken("Enter client id");
+      String id = WarehouseContext.instance().getClient();
       Client client = warehouse.validateClient(id);  
       if (client == null) {
         System.out.println("Invalid ID");
@@ -57,54 +56,9 @@ public class ClientState extends WarehouseState {
           }
       }
     }  
-    public void addProductToCart() {
-        String id = getToken("Enter client id");
-        Client client = warehouse.validateClient(id); 
-        if (client == null) {
-            System.out.println("Invalid ID");
-        }
-        else {
-            String productId = getToken("Enter product id");
-            Product product = warehouse.validateProduct(productId); 
-            if (product == null) {
-                System.out.println("Invalid ID");
-            }
-            else {
-               String quantity = getToken("Enter quantity");
-               int qty = Integer.valueOf(quantity);
-               warehouse.addItemToCart(client, product, qty);
-               System.out.println("The value of shopping cart after adding product: " 
-                                               +  warehouse.getShoppingCart(client));
-            }
-        }
-   }
-    public void editCart() {
-      String id = getToken("Enter client id");
-      Client client = warehouse.validateClient(id); 
-      if (client == null) {
-        System.out.println("Invalid ID");
-      }
-      else {
-        System.out.println("Contents of the shopping cart: ");
-        System.out.println(warehouse.getShoppingCart(client));
-        String productId = "";
-        while (!productId.equals("EXIT")) { 
-          productId = getToken("Enter product id or EXIT to exit");
-          CartItem cartItem = warehouse.validateCartItem(productId, client);
-          if (cartItem == null) {
-            if(!productId.equals("EXIT"))
-              System.out.println("Invalid ID");
-          } else {
-            int qty = getNumber("Enter new quantity");
-            cartItem.setQuantity(qty);
-            System.out.println(cartItem.toString());
-          }
-        }
-      }
-   }
 
    public void showClientDetails(){
-     String id = getToken("Enter Client Id");
+     String id = WarehouseContext.instance().getClient();
      Client selectedClient = warehouse.validateClient(id);
      if (selectedClient == null){
        System.out.println("Invalid ID");
@@ -129,7 +83,7 @@ public class ClientState extends WarehouseState {
     }
 
     public void showClientWaitlist(){
-      String id = getToken("Enter Client Id");
+      String id = WarehouseContext.instance().getClient();
       Client selectedClient = warehouse.validateClient(id);
       if (selectedClient == null){
         System.out.println("Invalid ID");
@@ -162,45 +116,28 @@ public class ClientState extends WarehouseState {
       else 
          (WarehouseContext.instance()).changeState(3); //Go to LoginState
     }
+    
+    public void viewCart() {
+    	(WarehouseContext.instance()).changeState(4); //Go to ShoppingCartState
+    }
 
     public void help() {
-      System.out.println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
+      System.out.println("\nEnter a number between " + EXIT + " and " + HELP + " as explained below:\n");
       System.out.println(EXIT + " to exit the program\n");
       System.out.println(CLIENT_DETALS + " to see a client's details ");
       System.out.println(LIST_PRODUCTS + " to show products");
       System.out.println(CLIENT_TRANSACTIONS + " to show client transactions ");
-      System.out.println(ADD_TO_CART + " to add an item to the cart");
-      System.out.println(EDIT_CART + " to edit shopping cart");
+      System.out.println(VIEW_CART + " to view the shopping cart");
       System.out.println(WAIT_LIST + " to see a client's waitlist");
-      System.out.println(HELP + " for help");
       System.out.println(LOGOUT + " to logout");
-    }
-
-     public int getCommand() {
-      do {
-        try {
-          int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
-          if (value >= EXIT && value <= HELP) {
-            return value;
-          }
-        } catch (NumberFormatException nfe) {
-          System.out.println("Enter a number");
-        }
-      } while (true);
-      }
-    private boolean yesOrNo(String prompt) {
-      String more = getToken(prompt + " (Y|y)[es] or anything else for no");
-      if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') {
-        return false;
-      }
-      return true;
+      System.out.println(HELP + " for help");
     }
 
     public Calendar getDate(String prompt) {
       do {
         try {
           Calendar date = new GregorianCalendar();
-          String item = getToken(prompt);
+          String item = getPrompt.getToken(prompt);
           DateFormat df = SimpleDateFormat.getDateInstance(DateFormat.SHORT);
           date.setTime(df.parse(item));
           return date;
@@ -213,7 +150,7 @@ public class ClientState extends WarehouseState {
     public void process() {
       int command;
         help();
-        while ((command = getCommand()) != EXIT) {
+        while ((command = getPrompt.getCommand()) != EXIT) {
           switch (command) {
             case CLIENT_DETALS:     showClientDetails();
                                     break;
@@ -221,9 +158,7 @@ public class ClientState extends WarehouseState {
                                     break;
             case CLIENT_TRANSACTIONS: showTransactions();
                                     break;
-            case ADD_TO_CART:		addProductToCart();
-            						break;
-            case EDIT_CART: 		editCart();
+            case VIEW_CART: 		viewCart();
                           			break;
             case WAIT_LIST:  		showClientWaitlist();
                                     break;
@@ -234,33 +169,6 @@ public class ClientState extends WarehouseState {
           }
         }
         logout();
-    }
-
-    public String getToken(String prompt) {
-      do {
-        try {
-          System.out.println(prompt);
-          String line = reader.readLine();
-          StringTokenizer tokenizer = new StringTokenizer(line,"\n\r\f");
-          if (tokenizer.hasMoreTokens()) {
-            return tokenizer.nextToken();
-          }
-        } catch (IOException ioe) {
-          System.exit(0);
-        }
-      } while (true);
-    }
-    
-    public int getNumber(String prompt) {
-      do {
-        try {
-          String item = getToken(prompt);
-          Integer num = Integer.valueOf(item);
-          return num.intValue();
-        } catch (NumberFormatException nfe) {
-          System.out.println("Please input a number ");
-        }
-      } while (true);
     }
     
     public void run() {

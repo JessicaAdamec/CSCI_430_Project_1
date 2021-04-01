@@ -192,6 +192,11 @@ public class Warehouse implements Serializable {
 	  CartItem cartItem = new CartItem(product.getID(), qty);
       client.addItemToCart(cartItem);
   }
+  
+  public void removeItemFromCart(Client client, CartItem cartItem) {
+      client.removeItemFromCart(cartItem);
+  }
+  
   public Order newOrder(String clientID){
     Order order = new Order(clientID);
       if (orderList.insertOrder(order)) {

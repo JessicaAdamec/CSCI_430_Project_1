@@ -14,6 +14,10 @@ public class ShoppingCart implements Serializable {
 		cartItems.add(cartItem);
 		return true;
 	}
+	public boolean removeProduct(CartItem cartItem) {
+		cartItems.remove(cartItem);
+		return true;
+	}
 	public Iterator getProducts() {
 		return cartItems.iterator();
 	}
