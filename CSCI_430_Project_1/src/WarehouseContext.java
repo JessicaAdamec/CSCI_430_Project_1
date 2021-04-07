@@ -1,9 +1,10 @@
 
+import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Iterator;
-import java.util.StringTokenizer;
+import javax.swing.JFrame;
 
 public class WarehouseContext {
 	
@@ -20,30 +21,9 @@ public class WarehouseContext {
   public static final int IsClerk = 1;
   public static final int IsManager = 2;
   private String clientID;
+  private static JFrame WareFrame; 
   
-
-  public String getToken(String prompt) {
-    do {
-      try {
-        System.out.println(prompt);
-        String line = reader.readLine();
-        StringTokenizer tokenizer = new StringTokenizer(line,"\n\r\f");
-        if (tokenizer.hasMoreTokens()) {
-          return tokenizer.nextToken();
-        }
-      } catch (IOException ioe) {
-        System.exit(0);
-      }
-    } while (true);
-  }
-   
-  private boolean yesOrNo(String prompt) {
-    String more = getToken(prompt + " (Y|y)[es] or anything else for no");
-    if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') {
-      return false;
-    }
-    return true;
-  }
+  private GetPrompts getPrompt = new GetPrompts(WareFrame);
   
   private void retrieve() {
     try {
@@ -61,7 +41,7 @@ public class WarehouseContext {
   }  
   private void terminate()
   {
-   if (yesOrNo("Save data?")) {
+   if (getPrompt.yesOrNo("Save data?")) {
       if (warehouse.save()) {
          System.out.println(" The Warehouse has been successfully saved in the file WarehouseData \n" );
        } else {
@@ -101,7 +81,7 @@ public class WarehouseContext {
   }
   
   private WarehouseContext() { //constructor
-    if (yesOrNo("Look for saved data and  use it?")) {
+    if (getPrompt.yesOrNo("Look for saved data and  use it?")) {
       retrieve();
     } else {
       warehouse = Warehouse.instance();
@@ -122,6 +102,12 @@ public class WarehouseContext {
     nextState[4][0] = 0;nextState[4][1] = -1;nextState[4][2] = -1;nextState[4][3] = -1;nextState[4][4] = -1;nextState[4][5] = -1;
     nextState[5][0] = -1;nextState[5][1] = 1;nextState[5][2] = -1;nextState[5][3] = -1;nextState[5][4] = -1;nextState[5][5] = -1;
     currentState = 3;
+    
+    WareFrame = new JFrame("Warehouse GUI");
+	WareFrame.addWindowListener(new WindowAdapter()
+       {public void windowClosing(WindowEvent e){System.exit(0);}});
+    WareFrame.setSize(400,400);
+    WareFrame.setLocation(400, 400);
   }
    
   public static WarehouseContext instance() {
@@ -135,4 +121,7 @@ public class WarehouseContext {
 	states[currentState].run();
   }
   
+  public JFrame getFrame()
+  { return WareFrame;}
+
 }

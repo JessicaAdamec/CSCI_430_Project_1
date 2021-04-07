@@ -1,4 +1,6 @@
-public abstract class WarehouseState {
+import java.awt.event.ActionListener;
+
+public abstract class WarehouseState implements ActionListener {
   protected static Warehouse context;
   protected WarehouseState() {
   }

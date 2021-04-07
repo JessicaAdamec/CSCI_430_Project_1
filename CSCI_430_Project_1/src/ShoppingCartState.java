@@ -1,13 +1,25 @@
 import java.util.*;
 import java.text.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.StringTokenizer;
+
+import javax.swing.AbstractButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 
-public class ShoppingCartState extends WarehouseState {
+public class ShoppingCartState extends WarehouseState implements ActionListener{
 	private static ShoppingCartState shoppingCartState;
 	private static Warehouse warehouse;
 	private WarehouseContext context;
@@ -19,7 +31,13 @@ public class ShoppingCartState extends WarehouseState {
 	 private static final int CHANGE_QUANTITY = 4;
 	 private static final int HELP = 5;
 	 
-	 private GetPrompts getPrompt = new GetPrompts(EXIT, HELP);
+	 private JFrame frame;
+	 private AbstractButton viewCartButton, addToCartButton, removeFromCartButton, changeQuantityButton, exitButton;
+	 private JTextArea textArea = new JTextArea(10, 30);
+	 private JScrollPane scrollArea;
+		 
+	 private GetPrompts getPrompt;
+	 private GUIMaker guiMaker = new GUIMaker();
 
 	  
 	  private ShoppingCartState() {
@@ -36,14 +54,38 @@ public class ShoppingCartState extends WarehouseState {
 	  }
 	  
 	  public void run() {
-	      process();
+	      GUIprocess();
 	  }
 	  
-	  public void process() {
-	      int command;
-	        help();
-	        while ((command = getPrompt.getCommand()) != EXIT) {
-	          switch (command) {
+	  public void GUIprocess() {
+	  	  frame = WarehouseContext.instance().getFrame();
+	  	  getPrompt = new GetPrompts(frame);
+	  	  frame.getContentPane().removeAll();
+	  	  frame.getContentPane().setLayout(new FlowLayout());
+	  	  	viewCartButton = guiMaker.makeButton("View Cart", VIEW_CART, this);
+	  	  	addToCartButton = guiMaker.makeButton("Add to Cart", ADD_TO_CART, this);
+	  	  	removeFromCartButton = guiMaker.makeButton("Remove from Cart", REMOVE_FROM_CART, this);
+	  	  	changeQuantityButton = guiMaker.makeButton("Change cart quantity", CHANGE_QUANTITY, this);
+		 	exitButton = guiMaker.makeButton("Exit", EXIT, this); 
+	  	  frame.getContentPane().add(this.viewCartButton);
+	  	  frame.getContentPane().add(this.addToCartButton);
+	  	  frame.getContentPane().add(this.removeFromCartButton);
+	  	  frame.getContentPane().add(this.changeQuantityButton);
+	  	  frame.getContentPane().add(this.exitButton);
+	  	  textArea.setEditable(false);
+	  	  scrollArea = new JScrollPane(textArea);
+	  	  scrollArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+	  	  frame.getContentPane().add(this.scrollArea, BorderLayout.CENTER);
+	  	  frame.setVisible(true);
+	  	  frame.paint(frame.getGraphics()); 
+	  	  //frame.repaint();
+	  	  frame.toFront();
+	  	  frame.requestFocus();
+	  }
+	  
+	  public void actionPerformed(ActionEvent event) {
+	    	int command = Integer.parseInt(event.getActionCommand());
+	    	switch (command) {
 	            case VIEW_CART:     	viewCart();
 	                                    break;
 	            case ADD_TO_CART:		addProductToCart();
@@ -52,32 +94,32 @@ public class ShoppingCartState extends WarehouseState {
 	                          			break;
 	            case CHANGE_QUANTITY:  	editCart();
 	                                    break;                     
-	            case HELP:              help();
+	            case EXIT:              exitCart();
 	                                    break;
-	          }
-	        }
-	        exitCart();
+	    	}
+                              
 	   }
 	  
 	  public void addProductToCart() {
 	        String id = WarehouseContext.instance().getClient();
 	        Client client = warehouse.validateClient(id); 
 	        if (client == null) {
-	            System.out.println("Invalid ID");
+	            JOptionPane.showMessageDialog(frame, "Invalid ID");
 	        }
 	        else {
 	            String productId = getPrompt.getToken("Enter product id");
 	            Product product = warehouse.validateProduct(productId); 
 	            if (product == null) {
-	                System.out.println("Invalid ID");
+	                JOptionPane.showMessageDialog(frame, "Invalid ID");
 	            }
 	            else {
 	               String quantity = getPrompt.getToken("Enter quantity");
 	               int qty = Integer.valueOf(quantity);
 	               warehouse.addItemToCart(client, product, qty);
-	               System.out.println("The value of shopping cart after adding product: " 
+	               textArea.setText("The value of shopping cart after adding product: " 
 	                                               +  warehouse.getShoppingCart(client));
 	            }
+	            
 	        }
 	   }
 	  
@@ -85,13 +127,13 @@ public class ShoppingCartState extends WarehouseState {
 		  String id = WarehouseContext.instance().getClient();
 	        Client client = warehouse.validateClient(id); 
 	        if (client == null) {
-	            System.out.println("Invalid ID");
+	            JOptionPane.showMessageDialog(frame, "Invalid ID");
 	        }
 	        else {
 	            String productId = getPrompt.getToken("Enter product id");
 	            CartItem cartItem = warehouse.validateCartItem(productId, client); 
 	            if (cartItem == null) {
-	                System.out.println("Invalid ID");
+	                JOptionPane.showMessageDialog(frame, "Invalid ID");
 	            }
 	            else {
 	            	warehouse.removeItemFromCart(client, cartItem);
@@ -102,15 +144,18 @@ public class ShoppingCartState extends WarehouseState {
 	  public void viewCart() {
 		  String id = WarehouseContext.instance().getClient();
 	      Client client = warehouse.validateClient(id); 
-		  System.out.println("Contents of the shopping cart: ");
-	      System.out.println(warehouse.getShoppingCart(client));
+	      String output = "";
+		  output += "Contents of the shopping cart: \n";
+	      output += warehouse.getShoppingCart(client);
+	      textArea.setText(output);
 	  }
 	  
 	  public void editCart() {
 	      String id = WarehouseContext.instance().getClient();
 	      Client client = warehouse.validateClient(id); 
+	      String output = "";
 	      if (client == null) {
-	        System.out.println("Invalid ID");
+	        JOptionPane.showMessageDialog(frame, "Invalid ID");
 	      }
 	      else {
 	        String productId = "";
@@ -119,27 +164,18 @@ public class ShoppingCartState extends WarehouseState {
 	          CartItem cartItem = warehouse.validateCartItem(productId, client);
 	          if (cartItem == null) {
 	            if(!productId.equals("EXIT"))
-	              System.out.println("Invalid ID");
+	              JOptionPane.showMessageDialog(frame, "Invalid ID");
 	          } else {
 	            int qty = getPrompt.getNumber("Enter new quantity");
 	            cartItem.setQuantity(qty);
-	            System.out.println(cartItem.toString());
+	            output += cartItem.toString() + " \n";
 	          }
 	        }
+	        textArea.setText(output);
 	      }
 	   }
 	  
 	  public void exitCart() {
 	      WarehouseContext.instance().changeState(0); //Go to ClientState
 	    }
-
-		public void help() {
-		  System.out.println("\nEnter a number between " + EXIT + " and " + HELP + " as explained below:\n");
-		  System.out.println(EXIT + " to exit the cart\n");
-		  System.out.println(VIEW_CART + " to view the cart ");
-		  System.out.println(ADD_TO_CART + " to add item to the cart");
-		  System.out.println(REMOVE_FROM_CART + " to remove item from the cart");
-		  System.out.println(CHANGE_QUANTITY + " to change a cart item quantity");
-		  System.out.println(HELP + " for help");
-		}
 }

@@ -1,13 +1,24 @@
 import java.util.*;
 import java.text.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.StringTokenizer;
+
+import javax.swing.AbstractButton;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 
-public class QueryClientState extends WarehouseState {
+public class QueryClientState extends WarehouseState implements ActionListener {
 	private static QueryClientState queryClientState;
 	private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 	private static Warehouse warehouse;
@@ -19,7 +30,14 @@ public class QueryClientState extends WarehouseState {
 	 private static final int NO_TRANSACTIONS = 3;
 	 private static final int HELP = 4;
 	 
-	 private GetPrompts getPrompt = new GetPrompts(EXIT, HELP);
+	 private JFrame frame;
+	 private AbstractButton showAllButton, showOutstandingBalanceButton, showNoTransactionButton, 
+	 	exitButton;
+	 private JTextArea textArea = new JTextArea(10, 30);
+	 private JScrollPane scrollArea;
+	 
+	 private GetPrompts getPrompt;
+	 private GUIMaker guiMaker = new GUIMaker();
 
 	  
 	  private QueryClientState() {
@@ -36,55 +54,79 @@ public class QueryClientState extends WarehouseState {
 	  }
 	  
 	  public void run() {
-	      process();
+	      GUIprocess();
 	  }
 	  
-	  public void process() {
-	      int command;
-	        help();
-	        while ((command = getPrompt.getCommand()) != EXIT) {
-	          switch (command) {
+	  public void GUIprocess() {
+	  	  frame = WarehouseContext.instance().getFrame();
+	  	  getPrompt = new GetPrompts(frame);
+	  	  frame.getContentPane().removeAll();
+	  	  frame.getContentPane().setLayout(new FlowLayout());
+	  	    showAllButton = guiMaker.makeButton("Show All Clients", DISPLAY_ALL, this);
+	  	    showOutstandingBalanceButton = guiMaker.makeButton("Show Clients with Outstanding Balance", OUTSTANDING_BALANCE, this); 
+	  	    showNoTransactionButton = guiMaker.makeButton("Show Clients with No Tranactions", NO_TRANSACTIONS, this); 
+		 	exitButton = guiMaker.makeButton("Exit", EXIT, this); 
+	  	  frame.getContentPane().add(this.showAllButton);
+	  	  frame.getContentPane().add(this.showOutstandingBalanceButton);
+	  	  frame.getContentPane().add(this.showNoTransactionButton);
+	  	  frame.getContentPane().add(this.exitButton);
+	  	  textArea.setEditable(false);
+	  	  scrollArea = new JScrollPane(textArea);
+	  	  scrollArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+	  	  frame.getContentPane().add(this.scrollArea, BorderLayout.CENTER);
+	  	  frame.setVisible(true);
+	  	  frame.paint(frame.getGraphics()); 
+	  	  //frame.repaint();
+	  	  frame.toFront();
+	  	  frame.requestFocus();
+	  }
+	  
+	  public void actionPerformed(ActionEvent event) {
+	    	int command = Integer.parseInt(event.getActionCommand());
+	    	switch (command) {
 	            case DISPLAY_ALL:     	showAllClients();
 	                                    break;
 	            case OUTSTANDING_BALANCE:showClientsWithBalance();
 	                                    break;
 	            case NO_TRANSACTIONS: 	showClientsWithNoTransactions();
 	                                    break;                             
-	            case HELP:              help();
+	            case EXIT:              logout();
 	                                    break;
-	          }
-	        }
-	        logout();
+          }
+                                
 	   }
 	  
 	  private void showAllClients() {
 		  	Iterator allClients = warehouse.getClients();
-			System.out.println("List of Clients: ");
+			String output = "List of Clients: \n";
 			while (allClients.hasNext()){
-			Client client = (Client)(allClients.next());
-			    System.out.println(client.toString());
+				Client client = (Client)(allClients.next());
+			    output += client.toString();
 			}
+			textArea.setText(output);
 	  }
 	  
 	  private void showClientsWithBalance() { 
 			Iterator allClients = warehouse.getClients();
-			System.out.println("List of Clients with Outstanding Balance: ");
+			String output = "List of Clients with Outstanding Balance: \n";
 			while (allClients.hasNext()){
 				Client client = (Client)(allClients.next());
 			  	if (client.getBalance() > 0)
-			    System.out.println(client.toString());
+			    output += client.toString();
 			}  
+			textArea.setText(output);
 	  }
 	  
 	  private void showClientsWithNoTransactions() {
 		  	Iterator allClients = warehouse.getClients();
-			System.out.println("List of Clients with No Transactions: ");
+			String output = "List of Clients with No Transactions: \n";
 			while (allClients.hasNext()){
 				Client client = (Client)(allClients.next());
 			  	Iterator transactionList = client.getTransactionList();
 			  	if(!transactionList.hasNext())
-			  		System.out.println(client.toString());
+			  		output += client.toString();
 			}  
+			textArea.setText(output);
 	  }
 	  
 	  public void logout() {//
@@ -95,12 +137,4 @@ public class QueryClientState extends WarehouseState {
 	         (WarehouseContext.instance()).changeState(3); //Go to LoginState
 	    }
 
-	    public void help() {
-	      System.out.println("\nEnter a number between " + EXIT + " and " + HELP + " as explained below:\n");
-	      System.out.println(EXIT + " to exit to clerk menu");
-	      System.out.println(DISPLAY_ALL + " to see a list of all clients");
-	      System.out.println(OUTSTANDING_BALANCE + " to show list of clients with an outstanding balance.");
-	      System.out.println(NO_TRANSACTIONS + " to show a list of clients with no transactions ");
-	      System.out.println(HELP + " for help");
-	    }
 }

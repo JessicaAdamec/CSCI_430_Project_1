@@ -2,7 +2,18 @@
 //Created 3/20/2021 for CSCI 430
 
 import java.util.*;
+
+import javax.swing.AbstractButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+
 import java.text.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.io.*;
 
 public class ClerkState extends WarehouseState {
@@ -21,7 +32,14 @@ public class ClerkState extends WarehouseState {
 	private static final int LOGOUT = 9;
 	private static final int HELP = 10;
 	
-	private GetPrompts getPrompt = new GetPrompts(EXIT, HELP);
+	private JFrame frame;
+	private AbstractButton addClientButton, showProductsButton, lookupClientsButton, 
+	 	becomeClientButton, displayWaitListButton, receiveShipmentButton, logoutButton;
+	private JTextArea textArea = new JTextArea(10, 30);
+	private JScrollPane scrollArea;
+	 
+	private GetPrompts getPrompt;
+	private GUIMaker guiMaker = new GUIMaker();
 	
 	private ClerkState() {
 	    super();
@@ -33,19 +51,6 @@ public class ClerkState extends WarehouseState {
 	  }
 	  return instance;
 	}
-	
-	public void help() {
-		System.out.println("\nEnter a number between " + EXIT + " and " + HELP + " as explained below:\n");
-		System.out.println(EXIT + " to exit the program");
-		System.out.println(ADD_CLIENT + " to add a client");
-		System.out.println(SHOW_PRODUCTS + " to show products");
-		System.out.println(LOOKUP_CLIENTS + " to lookup clients ");
-		System.out.println(BECOME_CLIENT + " to become a client");
-		System.out.println(DISPLAY_WAITLIST + " to display the waitlist");
-		System.out.println(RECEIVE_SHIPMENT + " to receive a shipment");
-		System.out.println(LOGOUT + " to logout");
-		System.out.println(HELP + " for help");
-	}
   
 	public void addClient() {
 	    String name = getPrompt.getToken("Enter client name");
@@ -54,17 +59,20 @@ public class ClerkState extends WarehouseState {
 	    Client result;
 	    result = warehouse.addClient(name, address, phone);
 	    if (result == null) {
-	      System.out.println("Could not add client");
+	    	JOptionPane.showMessageDialog(frame,"Could not add client");
 	    }
-	    System.out.println(result);
+	    String output = result.toString();
+	    textArea.setText(output);
   	}
 	public void showProducts() {
 		Iterator allProducts = warehouse.getProducts();
-		System.out.println("List of Products: ");
+		String output = "List of Products: \n";
 		while (allProducts.hasNext()){
 		Product product = (Product)(allProducts.next());
-		    System.out.println(product.toString());
+		    output += product.toString() + " \n";
+		    output += "Quantity: " + product.getInventory() + "\n \n";
 		}
+		textArea.setText(output);
 	}  
 	public void lookupClients() {
 		(WarehouseContext.instance()).changeState(5); //Go to QueryClientState
@@ -78,47 +86,53 @@ public class ClerkState extends WarehouseState {
 	    (WarehouseContext.instance()).changeState(0);//check this number
 	  }
 	  else 
-	    System.out.println("Invalid client id."); 
+	    JOptionPane.showMessageDialog(frame, "Invalid client id."); 
 	}
 	public void showProductWaitlist() {
 	  String id = getPrompt.getToken("Enter product id");
 	  Product product = warehouse.validateProduct(id); 
 	  if (product == null) {
-		  System.out.println("Invalid ID");
+		  JOptionPane.showMessageDialog(frame, "Invalid ID");
 	   } else {
-		   System.out.println("Quantity of Waitlist: " + warehouse.getProductWaitlistQty(product));
+		   textArea.setText("Quantity of Waitlist: " + warehouse.getProductWaitlistQty(product));
 	   }
 	}
 	public void processShipment() {
 	  Invoice invoice = new Invoice();
 	  String productId = "";
-	  while (!productId.equals("EXIT")) {
-		  productId = getPrompt.getToken("Enter product id or EXIT");
+	  
+	  boolean cont = getPrompt.yesOrNo("Do you have shipment items to process?");
+	  
+	  while (cont) {
+		  productId = getPrompt.getToken("Enter product id");
 		  Product product = warehouse.validateProduct(productId); 
 		  if (product == null) {
 			  if (!productId.equals("EXIT"))
-				  System.out.println("Invalid ID");
+				  JOptionPane.showMessageDialog(frame, "Invalid ID");
 		   }
 		   else {
 			   int qty = getPrompt.getNumber("Enter product qty");
 			   Iterator allWaitListEntries = warehouse.getProductWaitlist(product);
 			   while (allWaitListEntries.hasNext() & qty > 0){
 				   WaitListEntry waitListEntry = (WaitListEntry)(allWaitListEntries.next());
-				   System.out.println(waitListEntry.toString());
-				   String entry = getPrompt.getToken("Process this Waitlisted Order Item? (Y/N)");
-				   if (entry.toLowerCase().equals("y")) {
+				   String prompt = waitListEntry.toString();
+				   boolean entry = getPrompt.yesOrNo(prompt + "\n Process this Waitlisted Order Item?");
+				   if (entry) {
 					   if (qty > waitListEntry.getQuantity()) {
 						   invoice.addWaitListedItenSting(product, waitListEntry);
 						   qty = waitListEntry.processEntry(qty);
 					   } else {
-						   System.out.println("Insufficient items to fill order");
+						   JOptionPane.showMessageDialog(frame, "Insufficient items to fill order");
 					   }
 				   }
 		       }
 			   if (qty > 0) { product.addInventory(qty); }
 		   }
+		  cont = getPrompt.yesOrNo("Process another item?");
 	  }
-	  System.out.println(invoice.toString());
+	  String output = "";
+	  output += invoice.toString();
+	  textArea.setText(output);
 	}
 	public void logout() {//
 	  if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsManager) { //stem.out.println(" going to manager \n ");
@@ -127,34 +141,58 @@ public class ClerkState extends WarehouseState {
 	  else //go to LoginState
 	     (WarehouseContext.instance()).changeState(3); // check this number
 	}
-  
-	public void process() {
-		int command;
-	    help();
-	    while ((command = getPrompt.getCommand()) != EXIT) {
-	      switch (command) {
-	        case ADD_CLIENT:        addClient();
-	                                break;
-	        case SHOW_PRODUCTS:     showProducts();
-	                                break;
-	        case LOOKUP_CLIENTS:    lookupClients();
-	                                break;
-	        case BECOME_CLIENT:     becomeClient();
-	                                break;
-	        case DISPLAY_WAITLIST:  showProductWaitlist();
-	                                break;
-	        case RECEIVE_SHIPMENT:  processShipment();
-	                                break;
-	        case LOGOUT:          	logout();
-	        						break;	                                
-	        case HELP:              help();
-	                                break;
-	      }
-	    }
-	    logout();
-	}
 	
 	public void run() {
-	    process();
+	    GUIprocess();
 	}
+	
+	public void GUIprocess() {
+	  	  frame = WarehouseContext.instance().getFrame();
+	  	  getPrompt = new GetPrompts(frame);
+	  	  frame.getContentPane().removeAll();
+	  	  frame.getContentPane().setLayout(new FlowLayout());
+	  	    addClientButton = guiMaker.makeButton("Add Client", ADD_CLIENT, this);
+	  	    showProductsButton = guiMaker.makeButton("Show Products", SHOW_PRODUCTS, this); 
+	  	    lookupClientsButton = guiMaker.makeButton("Lookup Clients", LOOKUP_CLIENTS, this); 
+		 	becomeClientButton = guiMaker.makeButton("Become Client", BECOME_CLIENT, this); 
+		 	displayWaitListButton = guiMaker.makeButton("Display Waitlists", DISPLAY_WAITLIST, this); 
+		 	receiveShipmentButton = guiMaker.makeButton("Receive Shipment", RECEIVE_SHIPMENT, this); 
+		 	logoutButton = guiMaker.makeButton("Logout", LOGOUT, this);
+	  	  frame.getContentPane().add(this.addClientButton);
+	  	  frame.getContentPane().add(this.showProductsButton);
+	  	  frame.getContentPane().add(this.lookupClientsButton);
+	  	  frame.getContentPane().add(this.becomeClientButton);
+	  	  frame.getContentPane().add(this.displayWaitListButton);
+	  	  frame.getContentPane().add(this.receiveShipmentButton);
+	  	  frame.getContentPane().add(this.logoutButton);
+	  	  textArea.setEditable(false);
+	  	  scrollArea = new JScrollPane(textArea);
+	  	  scrollArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+	  	  frame.getContentPane().add(this.scrollArea, BorderLayout.CENTER);
+	  	  frame.setVisible(true);
+	  	  frame.paint(frame.getGraphics()); 
+	  	  //frame.repaint();
+	  	  frame.toFront();
+	  	  frame.requestFocus();
+	}
+	
+	public void actionPerformed(ActionEvent event) {
+    	int command = Integer.parseInt(event.getActionCommand());
+    	switch (command) {
+        	case ADD_CLIENT:    	addClient();
+                                	break;
+        	case SHOW_PRODUCTS:		showProducts();
+        							break;
+        	case LOOKUP_CLIENTS:	lookupClients();
+        							break;
+        	case BECOME_CLIENT:     becomeClient();
+        							break;
+        	case DISPLAY_WAITLIST:  showProductWaitlist();
+                                	break;
+        	case RECEIVE_SHIPMENT:  processShipment();
+        							break;
+        	case LOGOUT:          	logout();
+        							break;	                                
+    	}
+    }
 }

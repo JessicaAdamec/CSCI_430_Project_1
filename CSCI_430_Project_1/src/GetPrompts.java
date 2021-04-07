@@ -3,43 +3,29 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 public class GetPrompts {
 	
 	private int EXIT;
 	private int HELP;
 	private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+	private static JFrame frame;
 	
-	public GetPrompts(int EXIT, int HELP) {
-		this.EXIT = EXIT;
-		this.HELP = HELP;
-	}
-	
-	public int getCommand() {
-		do {
-			try {
-				int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
-				if (value >= EXIT && value <= HELP) {
-					return value;
-				}
-			} catch (NumberFormatException nfe) {
-				System.out.println("Enter a number");
-			}
-		} while (true);
+	public GetPrompts(JFrame WareFrame) {
+		this.frame = WareFrame;
 	}
 	
 	public String getToken(String prompt) {
-	      do {
-	        try {
-	          System.out.println(prompt);
-	          String line = reader.readLine();
-	          StringTokenizer tokenizer = new StringTokenizer(line,"\n\r\f");
+		do {
+          System.out.println(prompt);
+          String line = JOptionPane.showInputDialog(frame, prompt);
+          StringTokenizer tokenizer = new StringTokenizer(line,"\n\r\f");
 	      if (tokenizer.hasMoreTokens()) {
 	        return tokenizer.nextToken();
 	      }
-	    } catch (IOException ioe) {
-	      System.exit(0);
-	    }
-	  } while (true);
+		} while (true);
 	}
 	
 	public int getNumber(String prompt) {
@@ -49,17 +35,18 @@ public class GetPrompts {
 	      Integer num = Integer.valueOf(item);
 	      return num.intValue();
 	    } catch (NumberFormatException nfe) {
-	      System.out.println("Please input a number ");
+	    	JOptionPane.showMessageDialog(frame,"Please input a number ");
 	    }
 	  } while (true);
 	}
 	
-	private boolean yesOrNo(String prompt) {
-		  String more = getToken(prompt + " (Y|y)[es] or anything else for no");
-		  if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') {
+	public boolean yesOrNo(String prompt) {
+		if (JOptionPane.showConfirmDialog(null, prompt, "Yes or No?",
+		        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+		    return true;
+	  } else {
 		    return false;
-		  }
-		  return true;
+	  }
 	}
 	
 	public double getDouble(String prompt) {
@@ -69,7 +56,7 @@ public class GetPrompts {
 	        Double num = Double.valueOf(item);
 	        return num.doubleValue();
 	      } catch (NumberFormatException nfe) {
-	        System.out.println("Please input a number ");
+	    	  JOptionPane.showMessageDialog(frame,"Please input a number ");
 	      }
 	    } while (true);
 	  }

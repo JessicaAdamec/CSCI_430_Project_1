@@ -3,21 +3,32 @@
 
 import java.util.*;
 import java.text.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import java.util.StringTokenizer;
+
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 
-public class ClientState extends WarehouseState {
+public class ClientState extends WarehouseState implements ActionListener{
 	
   private static ClientState clientState;
   private static Warehouse warehouse;
   private WarehouseContext context;
 
  private static final int EXIT = 0;
- private static final int CLIENT_DETALS = 1;
+ private static final int CLIENT_DETAILS = 1;
  private static final int LIST_PRODUCTS = 2;
  private static final int CLIENT_TRANSACTIONS = 3;
  private static final int VIEW_CART = 4;
@@ -25,8 +36,14 @@ public class ClientState extends WarehouseState {
  private static final int LOGOUT = 6;
  private static final int HELP = 7;
  
- private GetPrompts getPrompt = new GetPrompts(EXIT, HELP);
-
+ private JFrame frame;
+ private AbstractButton detailsButton, productListButton, clientTransactionsButton, 
+ 	viewCartButton, showWaitListButton, logoutButton;
+ private JTextArea textArea = new JTextArea(10, 30);
+ private JScrollPane scrollArea;
+ 
+ private GetPrompts getPrompt;
+ private GUIMaker guiMaker = new GUIMaker();
   
   private ClientState() {
     super();
@@ -45,15 +62,16 @@ public class ClientState extends WarehouseState {
       String id = WarehouseContext.instance().getClient();
       Client client = warehouse.validateClient(id);  
       if (client == null) {
-        System.out.println("Invalid ID");
+        JOptionPane.showMessageDialog(frame, "Invalid ID");
       }
       else {
-        System.out.println("Client transactions: ");
+        String output = "Client transactions:" + " \n";
         Iterator allTransactions = warehouse.getTransactions(client);
         while (allTransactions.hasNext()){
           Transaction transaction = (Transaction)(allTransactions.next());
-                System.out.println(transaction.toString());
-          }
+                output += transaction.toString() + " \n";
+        }
+        textArea.setText(output);
       }
     }  
 
@@ -61,56 +79,62 @@ public class ClientState extends WarehouseState {
      String id = WarehouseContext.instance().getClient();
      Client selectedClient = warehouse.validateClient(id);
      if (selectedClient == null){
-       System.out.println("Invalid ID");
+       JOptionPane.showMessageDialog(frame, "Invalid ID");
      }
      else {
-       System.out.println("Client Name: " + warehouse.getClientName(selectedClient));
-       System.out.println("Client Phone: " + warehouse.getClientPhone(selectedClient));
-       System.out.println("Client Address: " + warehouse.getClientAddress(selectedClient));
-       System.out.println("Client Balance: " + warehouse.getClientBalance(selectedClient).toString());
+       String output = "Client Name: " + warehouse.getClientName(selectedClient)+ " \n";
+       output += "Client Phone: " + warehouse.getClientPhone(selectedClient) + " \n";
+       output += "Client Address: " + warehouse.getClientAddress(selectedClient) + " \n";
+       output += "Client Balance: " + warehouse.getClientBalance(selectedClient).toString() + " \n";
+       
+       textArea.setText(output);
      }
    }
 
    public void showProducts() {
       Iterator allProducts = warehouse.getProducts();
-      System.out.println("List of Products: ");
+      String output = "List of Products: \n";
       while (allProducts.hasNext()){
         Product product = (Product)(allProducts.next());
-        System.out.println(product.toString());
-        System.out.println("Product Name: " + warehouse.getProductName(product));
-        System.out.println("Product Sale Price: " + warehouse.getProductSalePrice(product));      
+        output += product.toString();
+        output += "Product Sale Price: " + warehouse.getProductSalePrice(product) + " \n \n";      
       }
+      
+      textArea.setText(output);
     }
 
     public void showClientWaitlist(){
       String id = WarehouseContext.instance().getClient();
       Client selectedClient = warehouse.validateClient(id);
       if (selectedClient == null){
-        System.out.println("Invalid ID");
+        JOptionPane.showMessageDialog(frame, "Invalid ID");
       }
       else{
         Iterator allProducts = warehouse.getProducts();
+        String output = "";
         while (allProducts.hasNext()){
           Product product = (Product)(allProducts.next());
           if(warehouse.getProductWaitlistQty(product) > 0){
             Iterator productWaitlist = product.getWaitList();
             if (!productWaitlist.hasNext()){
-              System.out.println("Wait List empty!");
+              JOptionPane.showMessageDialog(frame, "Wait List empty!");
             }
             while (productWaitlist.hasNext()){
               WaitListEntry waitListEntry = (WaitListEntry)(productWaitlist.next());
               if (waitListEntry.getClientid() == id){
-                System.out.println("Product Name: " + warehouse.getProductName(product));
-                System.out.println("Product Sale Price: " + warehouse.getProductSalePrice(product));      
+                output += "Product Name: " + warehouse.getProductName(product) + " \n";
+                output += "Product Sale Price: " + warehouse.getProductSalePrice(product) + " \n\n";      
               }
             }	  
           }
         }
+        textArea.setText(output);
       }
     }
     
     public void logout() {//
-      if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk) {
+      if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk || 
+    		  WarehouseContext.instance().getLogin() == WarehouseContext.IsManager) {
          WarehouseContext.instance().changeState(1); // Become a clerk
       }
       else 
@@ -119,18 +143,6 @@ public class ClientState extends WarehouseState {
     
     public void viewCart() {
     	(WarehouseContext.instance()).changeState(4); //Go to ShoppingCartState
-    }
-
-    public void help() {
-      System.out.println("\nEnter a number between " + EXIT + " and " + HELP + " as explained below:\n");
-      System.out.println(EXIT + " to exit the program\n");
-      System.out.println(CLIENT_DETALS + " to see a client's details ");
-      System.out.println(LIST_PRODUCTS + " to show products");
-      System.out.println(CLIENT_TRANSACTIONS + " to show client transactions ");
-      System.out.println(VIEW_CART + " to view the shopping cart");
-      System.out.println(WAIT_LIST + " to see a client's waitlist");
-      System.out.println(LOGOUT + " to logout");
-      System.out.println(HELP + " for help");
     }
 
     public Calendar getDate(String prompt) {
@@ -142,36 +154,59 @@ public class ClientState extends WarehouseState {
           date.setTime(df.parse(item));
           return date;
         } catch (Exception fe) {
-          System.out.println("Please input a date as mm/dd/yy");
+          JOptionPane.showMessageDialog(frame, "Please input a date as mm/dd/yy");
         }
       } while (true);
     }
    
-    public void process() {
-      int command;
-        help();
-        while ((command = getPrompt.getCommand()) != EXIT) {
-          switch (command) {
-            case CLIENT_DETALS:     showClientDetails();
-                                    break;
-            case LIST_PRODUCTS:     showProducts();
-                                    break;
-            case CLIENT_TRANSACTIONS: showTransactions();
-                                    break;
-            case VIEW_CART: 		viewCart();
-                          			break;
-            case WAIT_LIST:  		showClientWaitlist();
-                                    break;
-            case LOGOUT:          	logout();
-                        			break;	                                
-            case HELP:              help();
-                                    break;
-          }
-        }
-        logout();
-    }
     
     public void run() {
-      process();
+      GUIprocess();
     }
-  }
+    
+    public void GUIprocess() {
+  	  frame = WarehouseContext.instance().getFrame();
+  	  getPrompt = new GetPrompts(frame);
+  	  frame.getContentPane().removeAll();
+  	  frame.getContentPane().setLayout(new FlowLayout());
+  	      detailsButton = guiMaker.makeButton("Client Details", CLIENT_DETAILS, this);
+  	      productListButton =  guiMaker.makeButton("List Products", LIST_PRODUCTS, this);
+  	      clientTransactionsButton = guiMaker.makeButton("Client Transactions", CLIENT_TRANSACTIONS, this);
+  	      viewCartButton = guiMaker.makeButton("View Cart", VIEW_CART, this);
+  	      showWaitListButton = guiMaker.makeButton("Show Waitlist", WAIT_LIST, this);
+  	      logoutButton = guiMaker.makeButton("Logout", LOGOUT, this);  
+  	  frame.getContentPane().add(this.detailsButton);
+  	  frame.getContentPane().add(this.productListButton);
+  	  frame.getContentPane().add(this.clientTransactionsButton);
+  	  frame.getContentPane().add(this.viewCartButton);
+  	  frame.getContentPane().add(this.showWaitListButton);
+  	  frame.getContentPane().add(this.logoutButton);
+  	  textArea.setEditable(false);
+	  scrollArea = new JScrollPane(textArea);
+	  scrollArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+	  frame.getContentPane().add(this.scrollArea, BorderLayout.CENTER);
+  	  frame.setVisible(true);
+  	  frame.paint(frame.getGraphics()); 
+  	  //frame.repaint();
+  	  frame.toFront();
+  	  frame.requestFocus();
+    }
+    
+    public void actionPerformed(ActionEvent event) {
+    	int command = Integer.parseInt(event.getActionCommand());
+    	switch (command) {
+	        case CLIENT_DETAILS:     showClientDetails();
+	                                break;
+	        case LIST_PRODUCTS:     showProducts();
+	                                break;
+	        case CLIENT_TRANSACTIONS: showTransactions();
+	                                break;
+	        case VIEW_CART: 		viewCart();
+	                      			break;
+	        case WAIT_LIST:  		showClientWaitlist();
+	                                break;
+	        case LOGOUT:          	logout();
+	                    			break;	                                
+    	}
+    }
+}
